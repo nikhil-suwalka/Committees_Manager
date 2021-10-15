@@ -19,11 +19,8 @@ class User(AbstractUser):
     phone_no = models.CharField(blank=False, null=False, max_length=100)
 
 
-
-
-
 class ClubPosition(models.Model):
-    club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_member_clubid")
+    club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_position_clubid")
     position = models.CharField(blank=False, null=False, max_length=100)
     priority = models.IntegerField(blank=False, null=False, default=0)
 
