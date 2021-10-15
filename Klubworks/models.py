@@ -18,6 +18,9 @@ class User(AbstractUser):
     address = models.CharField(blank=False, null=False, max_length=100)
     phone_no = models.CharField(blank=False, null=False, max_length=100)
 
+    TYPES = ((0, "Student"), (1, "Teacher"))
+    user_type = models.IntegerField(default=0, choices=TYPES)
+
 
 class ClubPosition(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_position_clubid")
@@ -58,6 +61,7 @@ class Event(models.Model):
     logo = models.ImageField(upload_to="event_images/")
     tag = models.ManyToManyField(Tag, related_name="event_tags")
 
+
 class EventAttendance(models.Model):
     event_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="event_attendance_eventid")
     user_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="event_attendance_userid")
@@ -75,4 +79,3 @@ class FormSubmission(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="form_submission_userid")
     filled_time = models.DateTimeField(default=datetime.now, blank=True)
     form_data = models.CharField(blank=False, null=False, max_length=1000)
-
