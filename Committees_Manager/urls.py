@@ -18,12 +18,13 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
 
-from Klubworks.views import profile
+from Klubworks.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name="index.html")),
     path('accounts/', include('allauth.urls')),
     path('logout', LogoutView.as_view()),
-    path('profile/', profile, name="profile")
+    path('profile/', profile, name="profile"),
+    path('processprofile/', processprofile, name="processprofile")
 ]
