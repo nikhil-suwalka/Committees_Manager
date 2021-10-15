@@ -76,11 +76,3 @@ class FormSubmission(models.Model):
     filled_time = models.DateTimeField(default=datetime.now, blank=True)
     form_data = models.CharField(blank=False, null=False, max_length=1000)
 
-# name = models.CharField(blank=False, null=False, max_length=100)
-# information = models.CharField(blank=True, null=False, max_length=1000)
-# status = models.IntegerField(blank=False, null=False, default=0)
-# submit_date = models.DateTimeField(auto_now=True, null=False, blank=False)
-# submit_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="user_submit")
-# takeaway_user = models.ForeignKey(get_user_model(), null=True, default=None, on_delete=models.CASCADE, related_name="user_takeaway")
-# takeaway_date = models.DateTimeField(default=None, null=True, blank=False)
-# item_received = models.BooleanField(default=False)
