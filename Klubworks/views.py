@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from Klubworks.forms import ProfileForm
+from Klubworks.forms import *
 from Klubworks.models import User
 
 
@@ -21,3 +21,4 @@ def profile(request):
 
 def processprofile(request):
     pass
+
