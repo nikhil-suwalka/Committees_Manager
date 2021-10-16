@@ -6,11 +6,9 @@ from Klubworks.models import User
 
 def profile(request):
     if request.method == "POST":
-        #updated some entries in profile
+        # updated some entries in profile
         user = User.objects.get(id=request.user.id)
         user.uid = request.POST["uid"]
-        user.first_name = request.POST["first_name"]
-        user.last_name = request.POST["last_name"]
         user.college_name = request.POST["college_name"]
         user.address = request.POST["address"]
         user.phone_no = request.POST["phone_no"]
