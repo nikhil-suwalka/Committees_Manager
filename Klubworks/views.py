@@ -22,3 +22,15 @@ def profile(request):
 def processprofile(request):
     pass
 
+
+def club(request):
+    club_obj = Club.objects.get(pk=1)
+
+    # Two ways to access data from a model object
+    # print(club_obj.description)
+    # print(getattr(club_obj, "description"))
+
+    club_form = ClubForm(request.POST, club_obj)
+
+    context = {'club_form': club_form, 'club': club_obj}
+    return render(request, 'club.html', context)

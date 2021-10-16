@@ -17,4 +17,5 @@ class ProfileForm(forms.ModelForm):
 class ClubForm(forms.ModelForm):
     class Meta:
         model = Club
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ["logo_link"]

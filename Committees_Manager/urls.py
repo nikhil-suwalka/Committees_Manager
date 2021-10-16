@@ -26,5 +26,6 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('logout', LogoutView.as_view()),
     path('profile/', profile, name="profile"),
-    path('processprofile/', processprofile, name="processprofile")
+    path('processprofile/', processprofile, name="processprofile"),
+    path('club/', club, name="club"),
 ]
