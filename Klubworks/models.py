@@ -5,11 +5,11 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
-class Club(models.Model):
+class Tag(models.Model):
     name = models.CharField(blank=False, null=False, max_length=100)
-    type = models.CharField(blank=False, null=False, max_length=100)
-    description = models.CharField(blank=False, null=False, max_length=1000)
-    logo_link = models.ImageField(upload_to="clubs_images/")
+
+    def __str__(self):
+        return str(self.name)
 
 
 class User(AbstractUser):
@@ -20,6 +20,15 @@ class User(AbstractUser):
 
     TYPES = ((0, "Student"), (1, "Teacher"))
     user_type = models.IntegerField(default=0, choices=TYPES)
+
+
+class Club(models.Model):
+    name = models.CharField(blank=False, null=False, max_length=100)
+    type = models.ManyToManyField(Tag, related_name="club_tags")
+    description = models.CharField(blank=False, null=False, max_length=1000)
+    logo_link = models.ImageField(upload_to="static/clubs_images")
+    mentor = models.ManyToManyField(User, related_name="club_mentors")
+    approved = models.BooleanField(default=False)
 
 
 class ClubPosition(models.Model):
@@ -38,10 +47,6 @@ class UserAccess(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="user_access_clubid")
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_access_userid")
     access_type = models.IntegerField(blank=False, null=False, default=0)
-
-
-class Tag(models.Model):
-    name = models.CharField(blank=False, null=False, max_length=100)
 
 
 class Event(models.Model):

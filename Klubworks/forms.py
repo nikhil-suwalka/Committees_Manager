@@ -17,5 +17,17 @@ class ProfileForm(forms.ModelForm):
 class ClubForm(forms.ModelForm):
     class Meta:
         model = Club
-        # fields = "__all__"
-        exclude = ["logo_link"]
+        fields = "__all__"
+        exclude = ["approved"]
+
+    def __init__(self, club=None, **kwargs):
+        super(ClubForm, self).__init__(**kwargs)
+        self.fields["mentor"].queryset = User.objects.filter(user_type=1)
+        self.fields["type"].queryset = Tag.objects.all()
+
+        if club:
+            self.fields["type"].initial = club.type.all()
+            self.fields["mentor"].initial = club.mentor.all()
+            self.fields['mentor'].widget.attrs['disabled'] = 'disabled'
+
+            # self.fields['logo_link'].widget.attrs['disabled'] = 'disabled'
