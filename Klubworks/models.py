@@ -26,7 +26,7 @@ class Club(models.Model):
     name = models.CharField(blank=False, null=False, max_length=100)
     type = models.ManyToManyField(Tag, related_name="club_tags")
     description = models.CharField(blank=False, null=False, max_length=1000)
-    logo_link = models.ImageField(upload_to="static/clubs_images")
+    logo_link = models.ImageField(upload_to="static/clubs_images/")
     mentor = models.ManyToManyField(User, related_name="club_mentors")
     approved = models.BooleanField(default=False)
 
