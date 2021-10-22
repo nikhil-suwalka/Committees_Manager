@@ -30,6 +30,8 @@ class Club(models.Model):
     mentor = models.ManyToManyField(User, related_name="club_mentors")
     approved = models.BooleanField(default=False)
 
+    def __str__(self):
+        return str(self.name)
 
 class ClubPosition(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_position_clubid")
@@ -49,16 +51,21 @@ class UserAccess(models.Model):
     access_type = models.IntegerField(blank=False, null=False, default=0)
 
 
+# TODO: add created by field
 class Event(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="event_clubid")
     name = models.CharField(blank=False, null=False, max_length=100)
+
     # Event date
     datetime = models.DateTimeField(null=False, blank=False)
     visibility = models.BooleanField(default=False)
+
     # When event listing shows on site
     start = models.DateTimeField(null=False, blank=False)
+
     # When event listing disappears on the site
     end = models.DateTimeField(null=False, blank=False)
+
     # Duration of the event
     duration = models.CharField(blank=False, null=False, max_length=100)
     description = models.CharField(blank=False, null=False, max_length=100)
@@ -66,6 +73,8 @@ class Event(models.Model):
     logo = models.ImageField(upload_to="event_images/")
     tag = models.ManyToManyField(Tag, related_name="event_tags")
 
+    def __str__(self):
+        return str(self.name)
 
 class EventAttendance(models.Model):
     event_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="event_attendance_eventid")

@@ -28,4 +28,5 @@ urlpatterns = [
     path('profile/', profile, name="profile"),
     path('club/modify/<int:id>', modifyClub, name="modifyClub"),
     path('club/create/', createClub, name="createClub"),
+    path('club/<int:club_id>/event/create/', createEvent, name="createEvent"),
 ]

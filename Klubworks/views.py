@@ -13,6 +13,8 @@ def profile(request):
         user.address = request.POST["address"]
         user.phone_no = request.POST["phone_no"]
         user.save()
+
+  
     profile_form = ProfileForm(request.POST, request.user)
     user_dict = request.user.__class__.objects.filter(pk=request.user.id).values().first()
     context = {'profile_form': profile_form, 'user': user_dict}
@@ -21,8 +23,6 @@ def profile(request):
 
 def modifyClub(request, id):
     club_obj = Club.objects.get(pk=id)
-
-    print(club_obj.type.all())
 
     # Two ways to access data from a model object
     # print(club_obj.description)
@@ -52,3 +52,25 @@ def createClub(request):
     club_form = ClubForm()
     context = {'club_form': club_form}
     return render(request, 'create_club.html', context)
+
+
+def getUserClubs(request):
+    clubs = ClubMember.objects.get(user_id=request.user.id)
+    print(clubs)
+
+
+def createEvent(request, club_id):
+    if request.method == "POST":
+        club = Club.objects.get(pk=club_id)
+        event = Event.objects.create(name=request.POST["name"], club_id=club, datetime=request.POST["datetime"],
+                                     visibility=request.POST["visibility"], start=request.POST["start"],
+                                     end=request.POST["end"], duration=request.POST["duration"],
+                                     description=request.POST["description"], link=request.POST["link"],
+                                     logo=request.POST["logo"])
+        for tag in request.POST.getlist("tag"):
+            event.tag.add(Tag.objects.get(pk=tag))
+        event.save()
+
+    event_form = EventForm()
+    context = {'event_form': event_form}
+    return render(request, 'create_event.html', context)

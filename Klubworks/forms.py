@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import *
 
 
@@ -31,3 +32,36 @@ class ClubForm(forms.ModelForm):
             self.fields['mentor'].widget.attrs['disabled'] = 'disabled'
 
             # self.fields['logo_link'].widget.attrs['disabled'] = 'disabled'
+
+
+class DateInput(forms.DateTimeInput):
+    input_type = 'datetime-local'
+
+
+class EventForm(forms.ModelForm):
+    CHOICES = (
+        ("1", True),
+        ("2", False),
+    )
+
+    visibility = forms.ChoiceField(choices=((True, "Visible"), (False, "Not Visible"),),
+                                   required=True,
+                                   initial=True,
+                                   label='Visibility')
+
+    link = forms.CharField(label="Event link (if available)", required=False)
+
+
+    class Meta:
+        model = Event
+        fields = "__all__"
+        widgets = {
+            'start': DateInput(),
+            'end': DateInput(),
+            'datetime': DateInput(),
+
+        }
+        exclude = ["club_id"]
+
+    def __init__(self, **kwargs):
+        super(EventForm, self).__init__(**kwargs)
