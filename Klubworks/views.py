@@ -21,6 +21,16 @@ def profile(request):
 
 
 def modifyClub(request, id):
+    if request.method == "POST":
+        club = Club.objects.filter(pk=id)
+        club.update(name=request.POST["name"], description=request.POST["description"],
+                    logo_link=request.POST["logo_link"])
+        club = club.get()
+        club.type.clear()
+
+        for type in request.POST.getlist("type"):
+            club.type.add(Tag.objects.get(pk=type))
+        club.save()
     club_obj = Club.objects.get(pk=id)
 
     # Two ways to access data from a model object
@@ -53,7 +63,7 @@ def createClub(request):
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
 
-        clubAccess = UserAccess.objects.create(club_id=club,user_id=user)
+        clubAccess = UserAccess.objects.create(club_id=club, user_id=user)
 
         message = request.user.first_name \
                   + " " + request.user.last_name \
@@ -103,6 +113,7 @@ def getUserClubs(request):
 
 
 def createEvent(request, club_id):
+    # print(getUserClubs(request))
     if request.method == "POST":
         club = Club.objects.get(pk=club_id)
         event = Event.objects.create(name=request.POST["name"], club_id=club, datetime=request.POST["datetime"],
