@@ -1,2 +1,101 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+{% load static %}
+{% load socialaccount %}
+{% load widget_tweaks %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Home - Brand</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ABeeZee&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Advent+Pro&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Basic&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Battambang&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bellota+Text&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Koulen&display=swap">
+    <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Lista-Productos-Canito.css' %}">
+    <link rel="stylesheet" href="{% static 'css/News-Cards.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css">
+</head>
+
+<body>
+<nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar gradient">
+    <div class="container"><a class="navbar-brand logo" href="/"
+                              style="font-weight: bold;font-family: 'Bellota Text', serif;font-size: 27px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2"
+             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"
+             class="icon icon-tabler icon-tabler-layout-cards" style="width: 40;height: 50;">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <rect x="4" y="4" width="6" height="16" rx="2"></rect>
+            <rect x="14" y="4" width="6" height="10" rx="2"></rect>
+        </svg>
+        KlubWorks&nbsp;&nbsp;&nbsp;<img onclick="window.open('https://www.spit.ac.in')"
+                                        src="{% static 'img/college_logo.png' %}" width="50" height="50"></a>
+        <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarNav"><span
+                class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}" style="font-size: 21px;"><i
+                            class="fa fa-user-circle"></i>&nbsp;{{ user.first_name }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}" style="font-size: 21px;"></i>
+                        Logout</a></li>
+                {% else %}
+                    <li class="nav-item"><a href="{% provider_login_url 'google' %}" class="nav-link"
+                                            style="font-size: 21px;font-family: Basic, sans-serif;font-weight: bold;">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page lanidng-page">
+{% if user.is_authenticated %}
+            <section style="background: linear-gradient(94deg, rgba(125,113,245,0.39), rgba(19,157,254,0.16));">
+                <div class="col-md-12 col-lg-8 offset-lg-2"
+                     style="text-align: center;margin-bottom: 10px;padding-bottom: 20px;padding-top: 20px;">
+                    <button onclick="location.href = '{% url 'viewClub' %}'" class="btn btn-danger"
+                            style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #7c71f5;"
+                            type="button">My Clubs
+                    </button>
+                    <button class="btn btn-danger"
+                            style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #149eff;font-size: 13px;"
+                            type="button">Registered Events
+                    </button>
+                    <button class="btn btn-danger"
+                            style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #7c71f5;"
+                            type="button">Search
+                    </button>
+                    <button class="btn btn-danger"
+                            style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #149eff;"
+                            type="button">Filled Forms
+                    </button>
+                </div>
+            </section>
+        {% endif %}
+    {% block main %}
+
+    {% endblock %}
+</main>
+<footer class="page-footer">
+    <div class="container">
+        <div class="links"><a href="#">About us</a><a href="#">Contact us</a></div>
+        <div class="social-icons"><a href="#"><i class="icon ion-social-facebook"></i></a><a href="#"><i
+                class="icon ion-social-instagram-outline"></i></a><a href="#"><i
+                class="icon ion-social-twitter"></i></a></div>
+    </div>
+</footer>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>
+<script src="{% static 'js/theme.js' %}"></script>
+</body>
+
+</html>

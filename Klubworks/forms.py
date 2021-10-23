@@ -8,11 +8,11 @@ class ProfileForm(forms.ModelForm):
     last_name = forms.CharField(disabled=True)
     email = forms.CharField(disabled=True)
     address = forms.CharField(required=False)
-    user_type = forms.IntegerField(disabled=True)
+    # user_type = forms.IntegerField(disabled=True)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'uid', 'college_name', 'address', 'phone_no', 'user_type']
+        fields = ['first_name', 'last_name', 'email', 'uid', 'college_name', 'address', 'phone_no']
 
 
 class ClubForm(forms.ModelForm):
