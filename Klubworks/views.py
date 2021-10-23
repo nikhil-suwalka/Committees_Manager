@@ -46,12 +46,14 @@ def approveClub(request, id):
 
 def createClub(request):
     if request.method == "POST":
-
+        user = User.objects.get(id=request.user.id)
         # updated some entries in profile
         club = Club.objects.create(name=request.POST["name"], description=request.POST["description"],
                                    logo_link=request.POST["logo_link"], )
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
+
+        clubAccess = UserAccess.objects.create(club_id=club,user_id=user)
 
         message = request.user.first_name \
                   + " " + request.user.last_name \
@@ -87,8 +89,9 @@ def createClub(request):
 def viewClub(request):
     clubs_ids = UserAccess.objects.filter(user_id=request.user.id)
     clubs = None
+    print(clubs_ids)
     if clubs_ids is not None:
-        clubs = Club.objects.filter(id__in=clubs_ids).values()
+        clubs = Club.objects.filter(id__in=[c.club_id.id for c in clubs_ids]).values()
     context = {'user': request.user, 'clubs': clubs}
     print(context)
     return render(request, 'my_clubs.html', context)
