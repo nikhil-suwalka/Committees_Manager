@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.core.mail import send_mail
 from Klubworks.forms import *
 from Klubworks.models import User
 
@@ -33,6 +33,17 @@ def modifyClub(request, id):
     return render(request, 'modify_club.html', context)
 
 
+def approveClub(request, id):
+    user = User.objects.get(id=request.user.id)
+    if user.is_authenticated and user.user_type == 1:
+        club = Club.objects.get(id=id)
+        club.approved = True
+        club.save()
+        return render(request, 'message.html', {'user': user, 'message': "Club request has been approved"})
+    else:
+        return render(request, 'message.html', {'user': user, 'message': "You are not authorized to access this page!"})
+
+
 def createClub(request):
     if request.method == "POST":
 
@@ -42,12 +53,32 @@ def createClub(request):
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
 
+        message = request.user.first_name \
+                  + " " + request.user.last_name \
+                  + "(" + request.user.email \
+                  + ") has requested to create a new Club" \
+                  + "\n Club Name: " + request.POST["name"] \
+                  + "\n Club description: " + request.POST["description"] \
+                  + "\n Click the below link to approve the request" \
+                  + "\n" + request.build_absolute_uri('/') + "club/approve/" + str(club.id)
+
         for mentor in request.POST["mentor"]:
             club.mentor.add(User.objects.get(pk=mentor))
-        #     TODO: send mail to the mentors
-
+        mentors_list = User.objects.filter(id__in=request.POST["mentor"]).all()
+        send_mail(
+            'KlubWorks : New Club Approval Request',
+            message,
+            request.user.email,
+            [m.email for m in mentors_list],
+            fail_silently=False,
+        )
+        # print('KlubWorks : New Club Approval Request',
+        #     message,
+        #     request.user.email,
+        #     [m.email for m in mentors_list],
+        #     )
         club.save()
-
+        return render(request, 'message.html', {'user': request.user, 'message': "Club request sent to mentors!"})
     club_form = ClubForm()
     context = {'club_form': club_form}
     return render(request, 'create_club.html', context)
@@ -61,6 +92,7 @@ def viewClub(request):
     context = {'user': request.user, 'clubs': clubs}
     print(context)
     return render(request, 'my_clubs.html', context)
+
 
 def getUserClubs(request):
     clubs = ClubMember.objects.get(user_id=request.user.id)

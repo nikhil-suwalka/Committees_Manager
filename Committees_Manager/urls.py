@@ -29,5 +29,6 @@ urlpatterns = [
     path('club/view/', viewClub, name="viewClub"),
     path('club/modify/<int:id>', modifyClub, name="modifyClub"),
     path('club/create/', createClub, name="createClub"),
+    path('club/approve/<int:id>', approveClub, name="approveClub"),
     path('club/<int:club_id>/event/create/', createEvent, name="createEvent"),
 ]
