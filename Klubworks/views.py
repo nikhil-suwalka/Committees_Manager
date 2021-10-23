@@ -31,6 +31,9 @@ def modifyClub(request, id):
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
         club.save()
+        return viewClub(request)
+
+
     club_obj = Club.objects.get(pk=id)
 
     # Two ways to access data from a model object
@@ -99,11 +102,9 @@ def createClub(request):
 def viewClub(request):
     clubs_ids = UserAccess.objects.filter(user_id=request.user.id)
     clubs = None
-    print(clubs_ids)
     if clubs_ids is not None:
         clubs = Club.objects.filter(id__in=[c.club_id.id for c in clubs_ids]).values()
     context = {'user': request.user, 'clubs': clubs}
-    print(context)
     return render(request, 'my_clubs.html', context)
 
 
