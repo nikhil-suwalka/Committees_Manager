@@ -22,6 +22,11 @@ def profile(request):
     return render(request, 'profile.html', context)
 
 
+def customhandler403(request, template_name='403.html'):
+    response = render(request, template_name)
+    response.status_code = 403
+    return response
+
 def modifyClub(request, id):
     if request.method == "POST":
         club = Club.objects.filter(pk=id)
@@ -42,8 +47,11 @@ def modifyClub(request, id):
     # print(getattr(club_obj, "description"))
 
     user_access = UserAccess.objects.filter(user_id=request.user.pk, club_id=id)
+
+    # If user isn't a member of the club
     if not user_access:
-        return HttpResponseForbidden("You're not allowed to modify this club")
+        return customhandler403(request)
+        # return HttpResponseForbidden("You're not allowed to modify this club")
 
     club_form = ClubForm(club_obj)
 
