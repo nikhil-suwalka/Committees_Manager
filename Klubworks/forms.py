@@ -8,6 +8,7 @@ class ProfileForm(forms.ModelForm):
     last_name = forms.CharField(disabled=True)
     email = forms.CharField(disabled=True)
     address = forms.CharField(required=False)
+
     # user_type = forms.IntegerField(disabled=True)
 
     class Meta:
@@ -16,10 +17,12 @@ class ProfileForm(forms.ModelForm):
 
 
 class ClubForm(forms.ModelForm):
+    logo_link = forms.ImageField()
+
     class Meta:
         model = Club
         fields = "__all__"
-        exclude = ["approved"]
+        exclude = ["approved", "created_by"]
 
     def __init__(self, club=None, **kwargs):
         super(ClubForm, self).__init__(**kwargs)
@@ -51,7 +54,6 @@ class EventForm(forms.ModelForm):
 
     link = forms.CharField(label="Event link (if available)", required=False)
 
-
     class Meta:
         model = Event
         fields = "__all__"
@@ -61,7 +63,7 @@ class EventForm(forms.ModelForm):
             'datetime': DateInput(),
 
         }
-        exclude = ["club_id"]
+        exclude = ["club_id", "created_by"]
 
     def __init__(self, **kwargs):
         super(EventForm, self).__init__(**kwargs)

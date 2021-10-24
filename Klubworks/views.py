@@ -23,18 +23,19 @@ def profile(request):
 
 
 def customhandler403(request, message, template_name='403.html'):
-    response = render(request, template_name, context={"message":message})
+    response = render(request, template_name, context={"message": message})
     response.status_code = 403
     return response
+
 
 def modifyClub(request, id):
     if request.method == "POST":
         club = Club.objects.filter(pk=id)
         club.update(name=request.POST["name"], description=request.POST["description"],
                     logo_link=request.POST["logo_link"])
+
         club = club.get()
         club.type.clear()
-
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
         club.save()
@@ -72,14 +73,13 @@ def approveClub(request, id):
 
 def createClub(request):
     if request.method == "POST":
-        user = User.objects.get(id=request.user.id)
         # updated some entries in profile
         club = Club.objects.create(name=request.POST["name"], description=request.POST["description"],
-                                   logo_link=request.POST["logo_link"], )
+                                   logo_link=request.POST["logo_link"], created_by=request.user)
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
 
-        clubAccess = UserAccess.objects.create(club_id=club, user_id=user)
+        clubAccess = UserAccess.objects.create(club_id=club, user_id=request.user)
 
         message = request.user.first_name \
                   + " " + request.user.last_name \
@@ -125,6 +125,7 @@ def deleteClub(request):
     pass
 
 
+# TODO: add logic to restrict user to add event only in those clubs he is a part of
 def createEvent(request, club_id):
     # print(getUserClubs(request))
     if request.method == "POST":
@@ -133,7 +134,7 @@ def createEvent(request, club_id):
                                      visibility=request.POST["visibility"], start=request.POST["start"],
                                      end=request.POST["end"], duration=request.POST["duration"],
                                      description=request.POST["description"], link=request.POST["link"],
-                                     logo=request.POST["logo"])
+                                     logo=request.POST["logo"], created_by=request.user)
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
         event.save()

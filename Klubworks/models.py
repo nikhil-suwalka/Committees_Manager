@@ -30,6 +30,9 @@ class Club(models.Model):
     mentor = models.ManyToManyField(User, related_name="club_mentors")
     approved = models.BooleanField(default=False)
 
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="club_created_by")
+
+
     def __str__(self):
         return str(self.name)
 
@@ -72,6 +75,9 @@ class Event(models.Model):
     link = models.CharField(blank=False, null=True, max_length=100)
     logo = models.ImageField(upload_to="event_images/")
     tag = models.ManyToManyField(Tag, related_name="event_tags")
+
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_created_by")
+
 
     def __str__(self):
         return str(self.name)
