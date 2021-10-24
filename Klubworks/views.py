@@ -125,7 +125,6 @@ def deleteClub(request):
     pass
 
 
-# TODO: add logic to restrict user to add event only in those clubs he is a part of
 def createEvent(request, club_id):
     # print(getUserClubs(request))
     if request.method == "POST":
@@ -138,6 +137,12 @@ def createEvent(request, club_id):
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
         event.save()
+
+    user_access = UserAccess.objects.filter(user_id=request.user.pk, club_id=club_id)
+
+    # If user isn't a member of the club
+    if not user_access:
+        return customhandler403(request, message="You are not allowed to enter here")
 
     event_form = EventForm()
     context = {'event_form': event_form}
