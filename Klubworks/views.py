@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.core.mail import send_mail
 from Klubworks.forms import *
 from Klubworks.models import User
+from django.http import HttpResponseNotFound
+from django.http import HttpResponseForbidden
 
 
 def profile(request):
@@ -33,12 +35,15 @@ def modifyClub(request, id):
         club.save()
         return viewClub(request)
 
-
     club_obj = Club.objects.get(pk=id)
 
     # Two ways to access data from a model object
     # print(club_obj.description)
     # print(getattr(club_obj, "description"))
+
+    user_access = UserAccess.objects.filter(user_id=request.user.pk, club_id=id)
+    if not user_access:
+        return HttpResponseForbidden("You're not allowed to modify this club")
 
     club_form = ClubForm(club_obj)
 
@@ -108,9 +113,8 @@ def viewClub(request):
     return render(request, 'my_clubs.html', context)
 
 
-def getUserClubs(request):
-    clubs = ClubMember.objects.get(user_id=request.user.id)
-    print(clubs)
+def deleteClub(request):
+    pass
 
 
 def createEvent(request, club_id):
