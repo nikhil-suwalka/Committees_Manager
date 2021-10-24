@@ -22,8 +22,8 @@ def profile(request):
     return render(request, 'profile.html', context)
 
 
-def customhandler403(request, template_name='403.html'):
-    response = render(request, template_name)
+def customhandler403(request, message, template_name='403.html'):
+    response = render(request, template_name, context={"message":message})
     response.status_code = 403
     return response
 
@@ -50,7 +50,7 @@ def modifyClub(request, id):
 
     # If user isn't a member of the club
     if not user_access:
-        return customhandler403(request)
+        return customhandler403(request, message="You are not allowed to enter here")
         # return HttpResponseForbidden("You're not allowed to modify this club")
 
     club_form = ClubForm(club_obj)
