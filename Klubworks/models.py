@@ -54,7 +54,6 @@ class UserAccess(models.Model):
     access_type = models.IntegerField(blank=False, null=False, default=0)
 
 
-# TODO: add created by field
 class Event(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="event_clubid")
     name = models.CharField(blank=False, null=False, max_length=100)
