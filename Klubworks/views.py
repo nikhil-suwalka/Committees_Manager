@@ -81,6 +81,16 @@ def createClub(request):
 
         clubAccess = UserAccess.objects.create(club_id=club, user_id=request.user)
 
+        for mentor in request.POST["mentor"]:
+            club.mentor.add(User.objects.get(pk=mentor))
+
+        # If the user is a faculty member
+        if request.user.user_type == 1:
+            club.approved = True
+
+            club.save()
+            return render(request, 'message.html', {'user': request.user, 'message': "Club has been created!"})
+
         message = request.user.first_name \
                   + " " + request.user.last_name \
                   + "(" + request.user.email \
@@ -90,8 +100,6 @@ def createClub(request):
                   + "\n Click the below link to approve the request" \
                   + "\n" + request.build_absolute_uri('/') + "club/approve/" + str(club.id)
 
-        for mentor in request.POST["mentor"]:
-            club.mentor.add(User.objects.get(pk=mentor))
         mentors_list = User.objects.filter(id__in=request.POST["mentor"]).all()
         send_mail(
             'KlubWorks : New Club Approval Request',

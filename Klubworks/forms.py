@@ -30,6 +30,8 @@ class ClubForm(forms.ModelForm):
         self.fields["type"].queryset = Tag.objects.all()
 
         if club:
+
+            # TODO: Sort these lists
             self.fields["type"].initial = club.type.all()
             self.fields["mentor"].initial = club.mentor.all()
             self.fields['mentor'].widget.attrs['disabled'] = 'disabled'
