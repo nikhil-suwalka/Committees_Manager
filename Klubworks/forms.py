@@ -24,13 +24,12 @@ class ClubForm(forms.ModelForm):
         fields = "__all__"
         exclude = ["approved", "created_by"]
 
-    def __init__(self, club=None, **kwargs):
-        super(ClubForm, self).__init__(**kwargs)
+    def __init__(self, club=None, *args, **kwargs):
+        super(ClubForm, self).__init__(*args, **kwargs)
         self.fields["mentor"].queryset = User.objects.filter(user_type=1)
         self.fields["type"].queryset = Tag.objects.all()
 
         if club:
-
             # TODO: Sort these lists
             self.fields["type"].initial = club.type.all()
             self.fields["mentor"].initial = club.mentor.all()
@@ -66,6 +65,3 @@ class EventForm(forms.ModelForm):
 
         }
         exclude = ["club_id", "created_by"]
-
-    def __init__(self, **kwargs):
-        super(EventForm, self).__init__(**kwargs)

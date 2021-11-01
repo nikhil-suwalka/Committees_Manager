@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from django.core.mail import send_mail
+from django.shortcuts import render
+
 from Klubworks.forms import *
 from Klubworks.models import User
-from django.http import HttpResponseNotFound
-from django.http import HttpResponseForbidden
 
 
 def profile(request):
@@ -48,7 +47,7 @@ def modifyClub(request, id):
         return customhandler403(request, message="You are not allowed to enter here")
         # return HttpResponseForbidden("You're not allowed to modify this club")
     club_obj = Club.objects.get(pk=id)
-    club_form = ClubForm(club_obj)
+    club_form = ClubForm(club=club_obj)
 
     context = {'club_form': club_form, 'club': club_obj}
     return render(request, 'modify_club.html', context)
@@ -69,7 +68,7 @@ def createClub(request):
     if request.method == "POST":
         # updated some entries in profile
         club = Club.objects.create(name=request.POST["name"], description=request.POST["description"],
-                                   logo_link=request.POST["logo_link"], created_by=request.user)
+                                   logo_link=request.FILES["logo_link"], created_by=request.user)
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
 
@@ -108,7 +107,7 @@ def createClub(request):
         #     )
         club.save()
         return render(request, 'message.html', {'user': request.user, 'message': "Club request sent to mentors!"})
-    club_form = ClubForm()
+    club_form = ClubForm(request.POST, request.FILES)
     context = {'club_form': club_form}
     return render(request, 'create_club.html', context)
 
@@ -134,7 +133,7 @@ def createEvent(request, club_id):
                                      visibility=request.POST["visibility"], start=request.POST["start"],
                                      end=request.POST["end"], duration=request.POST["duration"],
                                      description=request.POST["description"], link=request.POST["link"],
-                                     logo=request.POST["logo"], created_by=request.user)
+                                     logo=request.FILES["logo"], created_by=request.user)
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
         event.save()
@@ -145,6 +144,7 @@ def createEvent(request, club_id):
     if not user_access:
         return customhandler403(request, message="You are not allowed to enter here")
 
-    event_form = EventForm()
+    event_form = EventForm(request.POST, request.FILES)
+
     context = {'event_form': event_form}
     return render(request, 'create_event.html', context)

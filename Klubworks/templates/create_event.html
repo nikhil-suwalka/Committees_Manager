@@ -17,7 +17,7 @@
         <div class="col-sm-12">
             <div class="page-header">
                 <h2>Create an Event</h2>
-                <form class="form-horizontal" method="POST">
+                <form class="form-horizontal" method="POST"  enctype="multipart/form-data">
                     {% csrf_token %}
                     {% for field in event_form %}
                         <div class="form-group row">

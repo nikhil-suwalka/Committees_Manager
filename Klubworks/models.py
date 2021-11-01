@@ -26,15 +26,16 @@ class Club(models.Model):
     name = models.CharField(blank=False, null=False, max_length=100)
     type = models.ManyToManyField(Tag, related_name="club_tags")
     description = models.CharField(blank=False, null=False, max_length=1000)
+    # TODO: change upload_to directory
     logo_link = models.ImageField(upload_to="static/img")
     mentor = models.ManyToManyField(User, related_name="club_mentors")
     approved = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="club_created_by")
 
-
     def __str__(self):
         return str(self.name)
+
 
 class ClubPosition(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_position_clubid")
@@ -72,14 +73,14 @@ class Event(models.Model):
     duration = models.CharField(blank=False, null=False, max_length=100)
     description = models.CharField(blank=False, null=False, max_length=100)
     link = models.CharField(blank=False, null=True, max_length=100)
-    logo = models.ImageField(upload_to="event_images/")
+    logo = models.ImageField(upload_to="event_images")
     tag = models.ManyToManyField(Tag, related_name="event_tags")
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_created_by")
 
-
     def __str__(self):
         return str(self.name)
+
 
 class EventAttendance(models.Model):
     event_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="event_attendance_eventid")
