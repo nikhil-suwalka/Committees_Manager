@@ -42,6 +42,9 @@ class ClubPosition(models.Model):
     position = models.CharField(blank=False, null=False, max_length=100)
     priority = models.IntegerField(blank=False, null=False, default=0)
 
+    def __str__(self):
+        return str(self.position)
+
 
 class ClubMember(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_member_clubid")

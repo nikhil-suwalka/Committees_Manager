@@ -1,5 +1,5 @@
 from django.core.mail import send_mail
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from Klubworks.forms import *
 from Klubworks.models import User
@@ -151,3 +151,41 @@ def createEvent(request, club_id):
 
     context = {'event_form': event_form}
     return render(request, 'create_event.html', context)
+
+
+def manageRole(request, id):
+    if request.method == "POST":
+        role = ClubPosition.objects.filter(position=request.POST["position"]).all()
+        if not role:
+            new_role = ClubPosition.objects.create(club_id=Club.objects.get(id=id), position=request.POST["position"],
+                                                   priority=request.POST["priority"])
+    roles = ClubPosition.objects.filter(club_id=str(id)).order_by('priority').all()
+    print(roles)
+    context = {"roles": roles, "club_id": id, "roleForm": RoleForm(request.POST)}
+
+    return render(request, 'manage_roles.html', context)
+
+
+def manageMember(request, id):
+    pass
+
+
+def deleteRole(request, club_id, role_id):
+    ClubPosition.objects.filter(id=role_id).delete()
+
+    return redirect("manageRole",id=club_id)
+
+def editRole(request, club_id, role_id):
+    role = ClubPosition.objects.filter(id=role_id).first()
+    if request.method == "POST":
+        role.position = request.POST["position"]
+        role.priority = request.POST["priority"]
+        role.save()
+
+        return redirect("manageRole", id=club_id)
+
+    context = {"club_id": id, "roleForm": RoleForm(request.POST), "role":role}
+    return render(request, 'edit_role.html', context)
+
+
+

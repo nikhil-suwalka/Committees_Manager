@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load widget_tweaks %}
+{% block main %}
+    <div style="margin-top: 40px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2 style="width: 343px;">Roles List</h2>
+                </div>
+                <div class="col-md-4 d-flex justify-content-end align-self-start" style="margin-top: 10px;"></div>
+                {#                <div class="col">#}
+                {#                    <button class="btn btn-danger"#}
+                {#                            style="border: none;width: 151px;height: 37px;color: rgb(255,255,255);background: #8d87e3;margin-top: 10px;"#}
+                {#                            type="button"#}
+                {#                            onclick="location.href='{% url 'createClub' %}'"#}
+                {#                            >Add Role#}
+                {#                    </button>#}
+                {#                </div>#}
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="example" style="margin-bottom: 50px" class="table table-striped table-bordered"
+                           cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Priority</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if roles|length < 1 %}
+                            <td colspan="5" style="text-align: center;">You have no roles setup for this club</td>
+                        {% endif %}
+                        {% for role in roles %}
+                            <tr>
+                                <td>{{ role.position }}</td>
+                                <td>{{ role.priority }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger"><i
+                                            class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"
+                                            onclick="deleteRole({{  role.id}})"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-warning">
+                                        <i onclick="location.href='{% url 'editRole' club_id role.id%}'"
+                                            class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="page-header">
+                        <h2>Create New Role</h2>
+                        <form class="form-horizontal" method="POST">
+                            {% csrf_token %}
+                            {% for field in roleForm %}
+                                <div class="form-group row">
+                                    <div class="col-sm-6">
+                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                        {% render_field field class="form-control" %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <br>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <div class="btn-group btn-group-justified" role="group">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-primary" type="submit">Create</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function deleteRole(role_id) {
+            const choice = confirm("Deleting a role will delete all members assigned that are assigned this role, Are you sure you want to delete this role?");
+            var club_id = {{ club_id  }};
+            if(choice) {
+                location.href="/club/role/"+club_id+"/remove/"+role_id;
+            }
+        }
+    </script>
+{% endblock %}

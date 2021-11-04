@@ -31,4 +31,8 @@ urlpatterns = [
     path('club/create/', createClub, name="createClub"),
     path('club/approve/<int:id>', approveClub, name="approveClub"),
     path('club/<int:club_id>/event/create/', createEvent, name="createEvent"),
+    path('club/role/<int:id>', manageRole, name="manageRole"),
+    path('club/role/<int:club_id>/remove/<int:role_id>', deleteRole, name="deleteRole"),
+    path('club/role/<int:club_id>/edit/<int:role_id>', editRole, name="editRole"),
+    path('club/member/<int:id>', manageMember, name="manageMember"),
 ]

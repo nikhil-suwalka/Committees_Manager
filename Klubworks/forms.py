@@ -16,6 +16,12 @@ class ProfileForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'email', 'uid', 'college_name', 'address', 'phone_no']
 
 
+class RoleForm(forms.ModelForm):
+    class Meta:
+        model = ClubPosition
+        fields = ['position', 'priority']
+
+
 class ClubForm(forms.ModelForm):
     logo_link = forms.ImageField()
 
@@ -34,7 +40,6 @@ class ClubForm(forms.ModelForm):
             self.fields["type"].initial = club.type.all()
             self.fields["mentor"].initial = club.mentor.all()
             self.fields['mentor'].widget.attrs['disabled'] = 'disabled'
-
 
             # self.fields['logo_link'].widget.attrs['disabled'] = 'disabled'
 
