@@ -26,6 +26,7 @@
                         <tr>
                             <th>Position</th>
                             <th>Priority</th>
+                            <th>Edit Access</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -37,14 +38,19 @@
                             <tr>
                                 <td>{{ role.position }}</td>
                                 <td>{{ role.priority }}</td>
+                                {% if role.hasEdit %}
+                                    <td>Yes</td>
+                                {% else %}
+                                    <td>No</td>
+                                {% endif %}
                                 <td>
                                     <button type="button" class="btn btn-danger"><i
                                             class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"
-                                            onclick="deleteRole({{  role.id}})"></i>
+                                            onclick="deleteRole({{ role.id }})"></i>
                                     </button>
                                     <button type="button" class="btn btn-warning">
-                                        <i onclick="location.href='{% url 'editRole' club_id role.id%}'"
-                                            class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                        <i onclick="location.href='{% url 'editRole' club_id role.id %}'"
+                                           class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -88,8 +94,8 @@
         function deleteRole(role_id) {
             const choice = confirm("Deleting a role will delete all members assigned that are assigned this role, Are you sure you want to delete this role?");
             var club_id = {{ club_id  }};
-            if(choice) {
-                location.href="/club/role/"+club_id+"/remove/"+role_id;
+            if (choice) {
+                location.href = "/club/role/" + club_id + "/remove/" + role_id;
             }
         }
     </script>

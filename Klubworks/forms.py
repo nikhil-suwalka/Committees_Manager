@@ -17,9 +17,16 @@ class ProfileForm(forms.ModelForm):
 
 
 class RoleForm(forms.ModelForm):
+    TRUE_FALSE_CHOICES = (
+        (True, 'Yes'),
+        (False, 'No')
+    )
+    hasEdit = forms.ChoiceField(choices = TRUE_FALSE_CHOICES, label="Has club edit access",
+                              initial='', widget=forms.Select(), required=True)
+
     class Meta:
         model = ClubPosition
-        fields = ['position', 'priority']
+        fields = ['position', 'priority','hasEdit']
 
 
 class ClubForm(forms.ModelForm):
