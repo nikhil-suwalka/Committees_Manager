@@ -1,12 +1,22 @@
 {% extends "base.html" %}
 {% load custom_tags %}
 {% load widget_tweaks %}
+
+
+{% block head %}
+    <script>
+        $(document).ready(function () {
+            $('#id_members').select2();
+        });
+    </script>
+{% endblock %}
+
 {% block main %}
     <div style="margin-top: 40px;">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h2 style="width: 343px;">Roles List</h2>
+                    <h2 style="width: 343px;">Member List</h2>
                 </div>
                 <div class="col-md-4 d-flex justify-content-end align-self-start" style="margin-top: 10px;"></div>
             </div>
@@ -16,33 +26,27 @@
                            cellspacing="0" width="100%">
                         <thead>
                         <tr>
+                            <th>Name</th>
                             <th>Position</th>
-                            <th>Priority</th>
-                            <th>Edit Access</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% if roles|length < 1 %}
-                            <td colspan="5" style="text-align: center;">You have no roles setup for this club</td>
+                        {% if members|length < 1 %}
+                            <td colspan="5" style="text-align: center;">You have members assigned to this club</td>
                         {% endif %}
-                        {% for role in roles %}
+                        {% for member in members %}
                             <tr>
-                                <td>{{ role.position }}</td>
-                                <td>{{ role.priority }}</td>
-                                {% if role.hasEdit %}
-                                    <td>Yes</td>
-                                {% else %}
-                                    <td>No</td>
-                                {% endif %}
+                                <td>{{ member.user_id.first_name }} {{ member.user_id.last_name }}</td>
+                                <td>{{ member.position }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger"><i
-                                            class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"
-                                            onclick="deleteRole({{ role.id }})"></i>
+                                    <button type="button" class="btn btn-danger">
+                                        <i class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"
+                                           onclick="location.href='{% url 'deleteMember' club_id member.user_id.id %}'"></i>
                                     </button>
                                     <button type="button" class="btn btn-warning">
-                                        <i onclick="location.href='{% url 'editRole' club_id role.id %}'"
-                                           class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                        <i onclick="location.href='{% url 'editMember' club_id member.id %}'"
+                                                                                   class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -57,7 +61,18 @@
                         <h2>Create New Role</h2>
                         <form class="form-horizontal" method="POST">
                             {% csrf_token %}
-                            {% for field in roleForm %}
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <label for="id_members">Users List</label>
+                                    <select class="form-control" name="id_members" id="id_members">
+                                        <option selected disabled>--- Select Member ---</option>
+                                        {% for user in users %}
+                                            <option value="{{ user.id }}" name="{{ user.id }}">{{ user.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% for field in memberForm %}
                                 <div class="form-group row">
                                     <div class="col-sm-6">
                                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -70,7 +85,7 @@
                                 <div class="col-sm-6">
                                     <div class="btn-group btn-group-justified" role="group">
                                         <div class="btn-group" role="group">
-                                            <button class="btn btn-primary" type="submit">Create</button>
+                                            <button class="btn btn-primary" type="submit">Add</button>
                                         </div>
                                     </div>
                                 </div>
@@ -82,13 +97,13 @@
         </div>
     </div>
 
-    <script>
-        function deleteRole(role_id) {
-            const choice = confirm("Deleting a role will delete all members assigned that are assigned this role, Are you sure you want to delete this role?");
-            var club_id = {{ club_id  }};
-            if (choice) {
-                location.href = "/club/role/" + club_id + "/remove/" + role_id;
-            }
-        }
-    </script>
+    {#    <script>#}
+    {#        function deleteRole(role_id) {#}
+    {#            const choice = confirm("Deleting a role will delete all members assigned that are assigned this role, Are you sure you want to delete this role?");#}
+    {#            var club_id = {{ club_id  }};#}
+    {#            if (choice) {#}
+    {#                location.href = "/club/role/" + club_id + "/remove/" + role_id;#}
+    {#            }#}
+    {#        }#}
+    {#    </script>#}
 {% endblock %}

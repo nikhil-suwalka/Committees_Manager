@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
 # Create your models here.
 
 class Tag(models.Model):
@@ -20,6 +21,9 @@ class User(AbstractUser):
 
     TYPES = ((0, "Student"), (1, "Teacher"))
     user_type = models.IntegerField(default=0, choices=TYPES)
+
+    def __str__(self):
+        return str(self.first_name + " " + self.last_name)
 
 
 class Club(models.Model):

@@ -161,14 +161,9 @@ def manageRole(request, id):
                                                    priority=request.POST["priority"],
                                                    hasEdit=(True if request.POST["hasEdit"] == "True" else False))
     roles = ClubPosition.objects.filter(club_id=str(id)).order_by('priority').all()
-    print(roles)
     context = {"roles": roles, "club_id": id, "roleForm": RoleForm(request.POST)}
 
     return render(request, 'manage_roles.html', context)
-
-
-def manageMember(request, id):
-    pass
 
 
 def deleteRole(request, club_id, role_id):
@@ -189,3 +184,37 @@ def editRole(request, club_id, role_id):
 
     context = {"club_id": id, "roleForm": RoleForm(request.POST), "role": role}
     return render(request, 'edit_role.html', context)
+
+
+def manageMember(request, id):
+    if request.method == "POST":
+        user = User.objects.get(id=request.POST["id_members"])
+
+        if not ClubMember.objects.filter(user_id=user):
+            position = ClubPosition.objects.get(id=request.POST["position"])
+            club = Club.objects.get(id=id)
+            ClubMember.objects.create(club_id=club, user_id=user, position=position)
+
+    members = ClubMember.objects.filter(club_id=id).all()
+    print(members)
+    all_users = User.objects.filter(user_type=0, is_superuser=False).all()
+    all_users = [{"id": user.id, "name": user.first_name + " " + user.last_name} for user in all_users]
+    context = {"members": members, "club_id": id, "memberForm": MemberForm(request.POST), "users": all_users}
+    print(context)
+    return render(request, 'manage_members.html', context)
+
+
+def deleteMember(request, club_id, user_id):
+    ClubMember.objects.filter(user_id=User.objects.get(id=user_id)).delete()
+    return redirect("manageMember", id=club_id)
+
+
+def editMember(request, club_id, member_id):
+    member = ClubMember.objects.filter(id=member_id).first()
+    if request.method == "POST":
+        member.position = ClubPosition.objects.get(id=int(request.POST["position"]))
+        member.save()
+        return redirect("manageMember", id=club_id)
+
+    context = {"club_id": club_id, "memberForm": MemberEditForm(request.POST), "member": member}
+    return render(request, 'edit_member.html', context)

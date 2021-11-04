@@ -21,12 +21,26 @@ class RoleForm(forms.ModelForm):
         (True, 'Yes'),
         (False, 'No')
     )
-    hasEdit = forms.ChoiceField(choices = TRUE_FALSE_CHOICES, label="Has club edit access",
-                              initial='', widget=forms.Select(), required=True)
+    hasEdit = forms.ChoiceField(choices=TRUE_FALSE_CHOICES, label="Has club edit access",
+                                initial='', widget=forms.Select(), required=True)
 
     class Meta:
         model = ClubPosition
-        fields = ['position', 'priority','hasEdit']
+        fields = ['position', 'priority', 'hasEdit']
+
+
+class MemberForm(forms.ModelForm):
+    class Meta:
+        model = ClubMember
+        fields = ['position']
+
+
+class MemberEditForm(forms.ModelForm):
+    user_id = forms.CharField(disabled=True,label="Name")
+
+    class Meta:
+        model = ClubMember
+        fields = ['user_id','position']
 
 
 class ClubForm(forms.ModelForm):
