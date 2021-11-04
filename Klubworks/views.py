@@ -193,6 +193,7 @@ def manageMember(request, id):
         if not ClubMember.objects.filter(user_id=user):
             position = ClubPosition.objects.get(id=request.POST["position"])
             club = Club.objects.get(id=id)
+            UserAccess.objects.create(club_id=club,user_id=user)
             ClubMember.objects.create(club_id=club, user_id=user, position=position)
 
     members = ClubMember.objects.filter(club_id=id).all()
@@ -206,6 +207,7 @@ def manageMember(request, id):
 
 def deleteMember(request, club_id, user_id):
     ClubMember.objects.filter(user_id=User.objects.get(id=user_id)).delete()
+    UserAccess.objects.filter(user_id=User.objects.get(id=user_id),club_id=Club.objects.get(id=club_id)).delete()
     return redirect("manageMember", id=club_id)
 
 
