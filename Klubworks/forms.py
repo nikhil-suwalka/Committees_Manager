@@ -35,6 +35,7 @@ class ClubForm(forms.ModelForm):
             self.fields["mentor"].initial = club.mentor.all()
             self.fields['mentor'].widget.attrs['disabled'] = 'disabled'
 
+
             # self.fields['logo_link'].widget.attrs['disabled'] = 'disabled'
 
 

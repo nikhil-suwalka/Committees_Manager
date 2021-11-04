@@ -117,6 +117,9 @@ def viewClub(request):
     clubs = None
     if clubs_ids is not None:
         clubs = Club.objects.filter(id__in=[c.club_id.id for c in clubs_ids]).values()
+
+    for club in clubs:
+        club["tags"] = Club.objects.filter(id=club["id"]).get().type.all()
     context = {'user': request.user, 'clubs': clubs}
     return render(request, 'my_clubs.html', context)
 
