@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_tags %}
+
+
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12" style="background: linear-gradient(90deg, rgb(102,39,242), rgb(220,53,69));"><img
+                    id="club_image" src="{% static 'img/avatars/empty_profile.png' %}"
+                    style="max-height: 200px;max-width: 200px;margin: 15px;box-shadow: 0 0 14px 5px rgba(255,255,255,0.47);"
+                    alt="">
+                <div class="d-inline float-end" style="min-height: 50px;min-width: 50px;">
+                    <h1 id="club_name"
+                        style="margin: 10px;color: rgb(255,255,255);font-family: 'Bellota Text', serif;font-weight: bold;">{{ club.name }}</h1>
+                    <div id="club_tags">
+                        {% for tag in club.tags %}
+                            <button class="btn btn-danger"
+                                    style="border: none;height: 40px;margin-left: 0;color: rgb(255,255,255);background: #149eff;font-size: 11px;"
+                                    type="button" disabled>{{ tag.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div style="min-height: 100px;">
+                    <h4 style="font-family: 'Bellota Text', serif;font-weight: bold;color: rgb(0,0,0);background: rgba(102,16,242,0.08);padding: 10px;margin-right: -12px;margin-left: -12px;border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;">
+                        Description</h4>
+                    <div style="min-height: 100px;margin-bottom: 10px;background: rgba(255,255,255,0);"><span
+                            id="club_desc" style="color: rgb(0,0,0);">{{ club.description }}</span></div>
+                </div>
+                <h4 style="font-family: 'Bellota Text', serif;font-weight: bold;color: rgb(0,0,0);background: rgba(102,16,242,0.08);padding: 10px;margin-right: -12px;margin-left: -12px;border-top-left-radius: 15px;border-top-right-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px;">
+                    Mentors</h4>
+                <section class="team-clean">
+                    <div class="container">
+                        <div class="intro"></div>
+                        <div class="row people">
+                            {% for mentor in club.mentor %}
+                            <div class="col-md-6 col-lg-4 item"><img class="rounded-circle"
+                                                                     src="{% static 'img/avatars/empty_profile.png' %}"
+                                                                     alt="">
+                                <h3 class="name">{{ mentor }}</h3>
+                                <p class="title">TODO</p>
+                                <p class="description">TODO</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+                <h4 style="font-family: 'Bellota Text', serif;font-weight: bold;color: rgb(0,0,0);background: rgba(102,16,242,0.08);padding: 10px;margin-right: -12px;margin-left: -12px;border-top-left-radius: 15px;border-top-right-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px;">
+                    Members</h4>
+                <section class="team-clean">
+                    <div class="container">
+                        <div class="row people">
+                            {% for member in members %}
+                            <div class="col-md-6 col-lg-4 item"><img class="rounded-circle"
+                                                                     src="{% static 'img/avatars/empty_profile.png' %}"
+                                                                     alt="">
+                                <h3 class="name">{{member.name}}</h3>
+                                <p class="title">{{ member.position }}</p>
+                                <p class="description">TODO</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+                <h4 style="font-family: 'Bellota Text', serif;font-weight: bold;color: rgb(0,0,0);background: rgba(102,16,242,0.08);padding: 10px;margin-right: -12px;margin-left: -12px;border-top-left-radius: 15px;border-top-right-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px;">
+                    Events</h4>
+                <section class="team-grid">
+                    <div class="container">
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+{% endblock %}
