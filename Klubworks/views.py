@@ -40,10 +40,10 @@ def modifyClub(request, id):
         club.save()
         return viewClub(request)
 
-    user_access = UserAccess.objects.filter(user_id=request.user.pk, club_id=id)
+    user_access = ClubMember.objects.filter(user_id=request.user.pk, club_id=id).first()
 
     # If user isn't a member of the club
-    if not user_access:
+    if not user_access or not user_access.position.hasEdit:
         return customhandler403(request, message="You are not allowed to enter here")
         # return HttpResponseForbidden("You're not allowed to modify this club")
     club_obj = Club.objects.get(pk=id)
@@ -72,8 +72,9 @@ def createClub(request):
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
 
-        clubAccess = UserAccess.objects.create(club_id=club, user_id=request.user)
+        memberPosition = ClubPosition.objects.create(club_id=club, position="Member", priority=1, hasEdit=True)
 
+        ClubMember.objects.create(club_id=club, user_id=request.user, position=memberPosition)
         for mentor in request.POST["mentor"]:
             club.mentor.add(User.objects.get(pk=mentor))
 
@@ -113,10 +114,10 @@ def createClub(request):
 
 
 def viewClub(request):
-    clubs_ids = UserAccess.objects.filter(user_id=request.user.id)
+    clubs_member = ClubMember.objects.filter(user_id=request.user.id)
     clubs = None
-    if clubs_ids is not None:
-        clubs = Club.objects.filter(id__in=[c.club_id.id for c in clubs_ids]).values()
+    if clubs_member is not None:
+        clubs = Club.objects.filter(id__in=[c.club_id.id for c in clubs_member]).values()
 
     for club in clubs:
         club["tags"] = Club.objects.filter(id=club["id"]).get().type.all()
@@ -141,7 +142,7 @@ def createEvent(request, club_id):
             event.tag.add(Tag.objects.get(pk=tag))
         event.save()
 
-    user_access = UserAccess.objects.filter(user_id=request.user.pk, club_id=club_id)
+    user_access = ClubMember.objects.filter(user_id=request.user.pk, club_id=club_id)
 
     # If user isn't a member of the club
     if not user_access:
@@ -167,6 +168,19 @@ def manageRole(request, id):
 
 
 def deleteRole(request, club_id, role_id):
+    club_position = ClubPosition.objects.filter(pk=role_id).get()
+    club_members_count = ClubMember.objects.filter(position=club_position).count()
+    if club_members_count > 0:
+        roles = ClubPosition.objects.filter(club_id=str(club_id)).order_by('priority').all()
+        context = {"roles": roles, "club_id": club_id, "roleForm": RoleForm(request.POST), "message": "Cannot delete a "
+                                                                                                      "position which has "
+                                                                                                      "members assigned "
+                                                                                                      "to. Please reassign "
+                                                                                                      "the members to a "
+                                                                                                      "new position first."}
+
+        return render(request, 'manage_roles.html', context)
+
     ClubPosition.objects.filter(id=role_id).delete()
 
     return redirect("manageRole", id=club_id)
@@ -193,7 +207,6 @@ def manageMember(request, id):
         if not ClubMember.objects.filter(user_id=user):
             position = ClubPosition.objects.get(id=request.POST["position"])
             club = Club.objects.get(id=id)
-            UserAccess.objects.create(club_id=club, user_id=user)
             ClubMember.objects.create(club_id=club, user_id=user, position=position)
 
     members = ClubMember.objects.filter(club_id=id).all()
@@ -206,7 +219,6 @@ def manageMember(request, id):
 
 def deleteMember(request, club_id, user_id):
     ClubMember.objects.filter(user_id=User.objects.get(id=user_id)).delete()
-    UserAccess.objects.filter(user_id=User.objects.get(id=user_id), club_id=Club.objects.get(id=club_id)).delete()
     return redirect("manageMember", id=club_id)
 
 
@@ -224,15 +236,17 @@ def editMember(request, club_id, member_id):
 def clubDisplay(request, id):
     club = Club.objects.filter(id=id).first()
     context = {}
-    if club:
+    if club and club.approved:
         members = ClubMember.objects.filter(club_id=club).order_by("position__priority").all()
-        context["members"] = [{"member_id": member.id, "name": member.user_id.first_name + " " + member.user_id.last_name,
-                               "email": member.user_id.email, "position": member.position.position} for member in
-                              members]
+        context["members"] = [
+            {"member_id": member.id, "name": member.user_id.first_name + " " + member.user_id.last_name,
+             "email": member.user_id.email, "position": member.position.position} for member in
+            members]
         context["club"] = club
-        context["tag"] = club.type.all()
+
+        # TODO: send events
 
         return render(request, 'view_club.html', context)
     else:
-        # TODO no club is found send to 404
+        return customhandler403(request, message="Club doesn't exist")
         pass
