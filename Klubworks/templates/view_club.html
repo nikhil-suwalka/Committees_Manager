@@ -43,13 +43,15 @@
                         <div class="intro"></div>
                         <div class="row people">
                             {% for mentor in mentors %}
-                            <div class="col-md-6 col-lg-4 item"><img class="rounded-circle"
-                                                                     src="{% static 'img/avatars/empty_profile.png' %}"
-                                                                     alt="">
-                                <h3 class="name">{{ mentor }}</h3>
-                                <p class="title">TODO</p>
-                                <p class="description">TODO</p>
-                            </div>
+                                <div class="col-md-6 col-lg-4 item"
+                                     style="box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px">
+                                    <img class="rounded-circle"
+                                         src="{% static 'img/avatars/empty_profile.png' %}"
+                                         alt="">
+                                    <h3 class="name">{{ mentor }}</h3>
+                                    <p class="title">TODO</p>
+                                    <p class="description">TODO</p>
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
@@ -60,13 +62,15 @@
                     <div class="container">
                         <div class="row people">
                             {% for member in members %}
-                            <div class="col-md-6 col-lg-4 item"><img class="rounded-circle"
-                                                                     src="{% static 'img/avatars/empty_profile.png' %}"
-                                                                     alt="">
-                                <h3 class="name">{{member.name}}</h3>
-                                <p class="title">{{ member.position }}</p>
-                                <p class="description">TODO</p>
-                            </div>
+                                <div class="col-md-6 col-lg-4 item"
+                                     style="box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px"
+                                ><img class="rounded-circle"
+                                      src="{% static 'img/avatars/empty_profile.png' %}"
+                                      alt="">
+                                    <h3 class="name">{{ member.name }}</h3>
+                                    <p class="title">{{ member.position }}</p>
+                                    <p class="description">TODO</p>
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
