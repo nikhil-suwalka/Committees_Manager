@@ -13,6 +13,8 @@ class Tag(models.Model):
         return str(self.name)
 
 
+# TODO: add a short bio
+# TODO: add user image
 class User(AbstractUser):
     uid = models.CharField(blank=False, null=False, max_length=100)
     college_name = models.CharField(blank=False, null=False, max_length=100)
@@ -44,7 +46,7 @@ class Club(models.Model):
 class ClubPosition(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_position_clubid")
     position = models.CharField(blank=False, null=False, max_length=100)
-    priority = models.IntegerField(blank=False, null=False, default=0)
+    priority = models.IntegerField(blank=False, null=False, default=1)
     hasEdit = models.BooleanField(default=False)
 
     def __str__(self):
@@ -58,11 +60,6 @@ class ClubMember(models.Model):
 
     def __str__(self):
         return str(self.user_id.first_name + " " + self.user_id.last_name + " (" + self.position.position + ")")
-
-
-class UserAccess(models.Model):
-    club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="user_access_clubid")
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_access_userid")
 
 
 class Event(models.Model):
