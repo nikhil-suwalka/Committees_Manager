@@ -2,7 +2,10 @@
 {% load static %}
 {% load widget_tweaks %}
 {% load custom_tags %}
-
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/Team-Clean.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Team-Grid.css' %}">
+{% endblock %}
 
 {% block main %}
     <div class="container">
@@ -15,7 +18,7 @@
                     <h1 id="club_name"
                         style="margin: 10px;color: rgb(255,255,255);font-family: 'Bellota Text', serif;font-weight: bold;">{{ club.name }}</h1>
                     <div id="club_tags">
-                        {% for tag in club.tags %}
+                        {% for tag in tags %}
                             <button class="btn btn-danger"
                                     style="border: none;height: 40px;margin-left: 0;color: rgb(255,255,255);background: #149eff;font-size: 11px;"
                                     type="button" disabled>{{ tag.name }}
@@ -39,7 +42,7 @@
                     <div class="container">
                         <div class="intro"></div>
                         <div class="row people">
-                            {% for mentor in club.mentor %}
+                            {% for mentor in mentors %}
                             <div class="col-md-6 col-lg-4 item"><img class="rounded-circle"
                                                                      src="{% static 'img/avatars/empty_profile.png' %}"
                                                                      alt="">

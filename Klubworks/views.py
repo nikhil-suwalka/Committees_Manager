@@ -243,10 +243,8 @@ def clubDisplay(request, id):
              "email": member.user_id.email, "position": member.position.position} for member in
             members]
         context["club"] = club
-        club["tags"] = club.type.all()
-        club["mentor"] = club.mentor.all()
-
-
+        context["tags"] = club.type.all()
+        context["mentors"] = club.mentor.all()
 
         # TODO: send events
 
