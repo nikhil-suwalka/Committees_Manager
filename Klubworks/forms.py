@@ -23,6 +23,7 @@ class RoleForm(forms.ModelForm):
     )
     hasEdit = forms.ChoiceField(choices=TRUE_FALSE_CHOICES, label="Has club edit access",
                                 initial='', widget=forms.Select(), required=True)
+    priority = forms.IntegerField(min_value=1, max_value=100)
 
     class Meta:
         model = ClubPosition
@@ -36,11 +37,11 @@ class MemberForm(forms.ModelForm):
 
 
 class MemberEditForm(forms.ModelForm):
-    user_id = forms.CharField(disabled=True,label="Name")
+    user_id = forms.CharField(disabled=True, label="Name")
 
     class Meta:
         model = ClubMember
-        fields = ['user_id','position']
+        fields = ['user_id', 'position']
 
 
 class ClubForm(forms.ModelForm):
