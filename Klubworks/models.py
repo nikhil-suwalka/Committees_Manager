@@ -63,7 +63,6 @@ class ClubMember(models.Model):
 class UserAccess(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="user_access_clubid")
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_access_userid")
-    access_type = models.IntegerField(blank=False, null=False, default=0)
 
 
 class Event(models.Model):
