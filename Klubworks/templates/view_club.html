@@ -11,12 +11,12 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12" style="background: linear-gradient(90deg, rgb(102,39,242), rgb(220,53,69));"><img
-                    id="club_image" src="{% static 'img/avatars/empty_profile.png' %}"
+                    id="club_image" src="{% static 'img/club/' %}{{ logo }}"
                     style="max-height: 200px;max-width: 200px;margin: 15px;box-shadow: 0 0 14px 5px rgba(255,255,255,0.47);"
                     alt="">
                 <div class="d-inline float-end" style="min-height: 50px;min-width: 50px;">
                     <h1 id="club_name"
-                        style="margin: 10px;color: rgb(255,255,255);font-family: 'Bellota Text', serif;font-weight: bold;">{{ club.name }}</h1>
+                        style="font-size: 4em; margin: 10px;color: rgb(255,255,255);font-family: 'Bellota Text', serif;font-weight: bold;">{{ club.name }}</h1>
                     <div id="club_tags">
                         {% for tag in tags %}
                             <button class="btn btn-danger"

@@ -39,7 +39,7 @@
                         {% for club in clubs %}
                             <tr>
                                 <td>{{ club.id }}</td>
-                                <td>{{ club.name }}
+                                <td onclick="location.href='{% url 'clubDisplay' club.id %}'" style="cursor: pointer">{{ club.name }}
                                     {% if club.approved %}
                                         <i class="fa fa-check" style="color: green"></i>
                                     {% endif %}

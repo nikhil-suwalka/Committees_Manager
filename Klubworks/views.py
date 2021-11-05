@@ -245,6 +245,7 @@ def clubDisplay(request, id):
         context["club"] = club
         context["tags"] = club.type.all()
         context["mentors"] = club.mentor.all()
+        context["logo"] = str(club.logo_link).split("/")[-1]
 
         # TODO: send events
 

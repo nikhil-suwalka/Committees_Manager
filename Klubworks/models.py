@@ -33,7 +33,7 @@ class Club(models.Model):
     type = models.ManyToManyField(Tag, related_name="club_tags")
     description = models.CharField(blank=False, null=False, max_length=1000)
     # TODO: change upload_to directory
-    logo_link = models.ImageField(upload_to="static/img")
+    logo_link = models.ImageField(upload_to="static/img/club")
     mentor = models.ManyToManyField(User, related_name="club_mentors")
     approved = models.BooleanField(default=False)
 
@@ -80,7 +80,7 @@ class Event(models.Model):
     duration = models.CharField(blank=False, null=False, max_length=100)
     description = models.CharField(blank=False, null=False, max_length=100)
     link = models.CharField(blank=False, null=True, max_length=100)
-    logo = models.ImageField(upload_to="event_images")
+    logo = models.ImageField(upload_to="static/img/event")
     tag = models.ManyToManyField(Tag, related_name="event_tags")
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_created_by")
