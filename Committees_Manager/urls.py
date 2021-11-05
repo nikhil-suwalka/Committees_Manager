@@ -28,6 +28,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name="logout"),
     path('profile/', profile, name="profile"),
     path('club/view/', viewClub, name="viewClub"),
+    path('club/view/<int:id>', clubDisplay, name="clubDisplay"),
     path('club/modify/<int:id>', modifyClub, name="modifyClub"),
     path('club/create/', createClub, name="createClub"),
     path('club/approve/<int:id>', approveClub, name="approveClub"),

@@ -37,7 +37,9 @@
                         {% endif %}
                         {% for member in members %}
                             <tr>
-                                <td>{{ member.user_id.first_name }} {{ member.user_id.last_name }}</td>
+                                <td>{{ member.user_id.first_name }} {{ member.user_id.last_name }}
+                                    ({{ member.user_id.email }})
+                                </td>
                                 <td>{{ member.position }}</td>
                                 <td>
                                     <button type="button" class="btn btn-danger">
@@ -46,7 +48,7 @@
                                     </button>
                                     <button type="button" class="btn btn-warning">
                                         <i onclick="location.href='{% url 'editMember' club_id member.id %}'"
-                                                                                   class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                           class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -67,7 +69,9 @@
                                     <select class="form-control" name="id_members" id="id_members">
                                         <option selected disabled>--- Select Member ---</option>
                                         {% for user in users %}
-                                            <option value="{{ user.id }}" name="{{ user.id }}">{{ user.name }}</option>
+                                            <option value="{{ user.id }}"
+                                                    name="{{ user.id }}">{{ user.name }} ({{ user.email }})
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </div>

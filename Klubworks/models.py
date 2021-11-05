@@ -56,6 +56,9 @@ class ClubMember(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="club_member_userid")
     position = models.ForeignKey(ClubPosition, on_delete=models.CASCADE, related_name="club_member_position")
 
+    def __str__(self):
+        return str(self.user_id.first_name + " " + self.user_id.last_name + " (" + self.position.position + ")")
+
 
 class UserAccess(models.Model):
     club_id = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="user_access_clubid")

@@ -193,21 +193,20 @@ def manageMember(request, id):
         if not ClubMember.objects.filter(user_id=user):
             position = ClubPosition.objects.get(id=request.POST["position"])
             club = Club.objects.get(id=id)
-            UserAccess.objects.create(club_id=club,user_id=user)
+            UserAccess.objects.create(club_id=club, user_id=user)
             ClubMember.objects.create(club_id=club, user_id=user, position=position)
 
     members = ClubMember.objects.filter(club_id=id).all()
-    print(members)
     all_users = User.objects.filter(user_type=0, is_superuser=False).all()
-    all_users = [{"id": user.id, "name": user.first_name + " " + user.last_name} for user in all_users]
+    all_users = [{"id": user.id, "name": user.first_name + " " + user.last_name, "email": user.email} for user in
+                 all_users]
     context = {"members": members, "club_id": id, "memberForm": MemberForm(request.POST), "users": all_users}
-    print(context)
     return render(request, 'manage_members.html', context)
 
 
 def deleteMember(request, club_id, user_id):
     ClubMember.objects.filter(user_id=User.objects.get(id=user_id)).delete()
-    UserAccess.objects.filter(user_id=User.objects.get(id=user_id),club_id=Club.objects.get(id=club_id)).delete()
+    UserAccess.objects.filter(user_id=User.objects.get(id=user_id), club_id=Club.objects.get(id=club_id)).delete()
     return redirect("manageMember", id=club_id)
 
 
@@ -220,3 +219,20 @@ def editMember(request, club_id, member_id):
 
     context = {"club_id": club_id, "memberForm": MemberEditForm(request.POST), "member": member}
     return render(request, 'edit_member.html', context)
+
+
+def clubDisplay(request, id):
+    club = Club.objects.filter(id=id).first()
+    context = {}
+    if club:
+        members = ClubMember.objects.filter(club_id=club).order_by("position__priority").all()
+        context["members"] = [{"member_id": member.id, "name": member.user_id.first_name + " " + member.user_id.last_name,
+                               "email": member.user_id.email, "position": member.position.position} for member in
+                              members]
+        context["club"] = club
+        context["tag"] = club.type.all()
+
+        return render(request, 'view_club.html', context)
+    else:
+        # TODO no club is found send to 404
+        pass
