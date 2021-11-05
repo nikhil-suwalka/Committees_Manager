@@ -243,10 +243,13 @@ def clubDisplay(request, id):
              "email": member.user_id.email, "position": member.position.position} for member in
             members]
         context["club"] = club
+        club["tags"] = club.type.all()
+        club["mentor"] = club.mentor.all()
+
+
 
         # TODO: send events
 
         return render(request, 'view_club.html', context)
     else:
         return customhandler403(request, message="Club doesn't exist")
-        pass
