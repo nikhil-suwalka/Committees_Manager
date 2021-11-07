@@ -57,7 +57,7 @@
                                                 alt="">
                                     </div>
                                 </td>
-                                <td>{{ event.name }}</td>
+                                <td onclick="location.href='{% url 'eventDisplay' club.id event.id %}'">{{ event.name }}</td>
                                 <td>{{ event.datetime }}</td>
                                 <td>{{ event.start }}</td>
                                 <td>{{ event.end }}</td>

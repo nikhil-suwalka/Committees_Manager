@@ -8,7 +8,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Home - Brand</title>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ABeeZee&display=swap">
@@ -29,6 +28,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
             integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>KlubWorks</title>
+    <link rel="icon" href="{% static 'img/college_logo.png' %}">
     {% block head %}
     {% endblock %}
 </head>
@@ -65,29 +66,29 @@
     </div>
 </nav>
 <main class="page lanidng-page">
-{% if user.is_authenticated %}
-            <section style="background: linear-gradient(94deg, rgba(125,113,245,0.39), rgba(19,157,254,0.16));">
-                <div class="col-md-12 col-lg-8 offset-lg-2"
-                     style="text-align: center;margin-bottom: 10px;padding-bottom: 20px;padding-top: 20px;">
-                    <button onclick="location.href = '{% url 'viewClub' %}'" class="btn btn-danger"
-                            style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #7c71f5;"
-                            type="button">My Clubs
-                    </button>
-                    <button class="btn btn-danger"
-                            style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #149eff;font-size: 13px;"
-                            type="button">Registered Events
-                    </button>
-                    <button class="btn btn-danger"
-                            style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #7c71f5;"
-                            type="button">Search
-                    </button>
-                    <button class="btn btn-danger"
-                            style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #149eff;"
-                            type="button">Filled Forms
-                    </button>
-                </div>
-            </section>
-        {% endif %}
+    {% if user.is_authenticated %}
+        <section style="background: linear-gradient(94deg, rgba(125,113,245,0.39), rgba(19,157,254,0.16));">
+            <div class="col-md-12 col-lg-8 offset-lg-2"
+                 style="text-align: center;margin-bottom: 10px;padding-bottom: 20px;padding-top: 20px;">
+                <button onclick="location.href = '{% url 'viewClub' %}'" class="btn btn-danger"
+                        style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #7c71f5;"
+                        type="button">My Clubs
+                </button>
+                <button class="btn btn-danger"
+                        style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #149eff;font-size: 13px;"
+                        type="button">Registered Events
+                </button>
+                <button class="btn btn-danger"
+                        style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #7c71f5;"
+                        type="button">Search
+                </button>
+                <button class="btn btn-danger"
+                        style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #149eff;"
+                        type="button">Filled Forms
+                </button>
+            </div>
+        </section>
+    {% endif %}
     {% block main %}
 
     {% endblock %}

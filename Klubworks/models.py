@@ -78,7 +78,7 @@ class Event(models.Model):
 
     # Duration of the event
     duration = models.CharField(blank=False, null=False, max_length=100)
-    description = models.CharField(blank=False, null=False, max_length=100)
+    description = models.CharField(blank=False, null=False, max_length=2000)
     link = models.CharField(blank=False, null=True, max_length=100)
     logo = models.ImageField(upload_to="static/img/event")
     tag = models.ManyToManyField(Tag, related_name="event_tags")

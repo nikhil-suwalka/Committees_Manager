@@ -85,7 +85,7 @@ class EventForm(forms.ModelForm):
         ("1", True),
         ("2", False),
     )
-
+    description = forms.CharField(max_length=2000)
     visibility = forms.ChoiceField(choices=((True, "Visible"), (False, "Not Visible"),),
                                    required=True,
                                    initial=True,

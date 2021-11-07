@@ -143,11 +143,6 @@ def viewEvents(request, club_id):
     return render(request, 'view_events.html', context)
 
 
-def viewEvent(request, club_id, event_id):
-    club = Club.objects.filter(id=club_id).first()
-    event = Event.objects.filter(pk=event_id).first()
-
-
 def deleteEvent(request, club_id, event_id):
     event = Event.objects.filter(id=event_id).delete()
     return redirect("viewEvent", club_id=club_id)
@@ -272,7 +267,8 @@ def manageMember(request, id):
     all_users = User.objects.filter(user_type=0, is_superuser=False).all()
     all_users = [{"id": user.id, "name": user.first_name + " " + user.last_name, "email": user.email} for user in
                  all_users]
-    context = {"members": members, "club_id": id, "memberForm": MemberForm(request.POST,club_id = id), "users": all_users}
+    context = {"members": members, "club_id": id, "memberForm": MemberForm(request.POST, club_id=id),
+               "users": all_users}
     return render(request, 'manage_members.html', context)
 
 
@@ -288,7 +284,7 @@ def editMember(request, club_id, member_id):
         member.save()
         return redirect("manageMember", id=club_id)
 
-    context = {"club_id": club_id, "memberForm": MemberEditForm(request.POST,club_id=club_id), "member": member}
+    context = {"club_id": club_id, "memberForm": MemberEditForm(request.POST, club_id=club_id), "member": member}
     return render(request, 'edit_member.html', context)
 
 
@@ -310,7 +306,7 @@ def clubDisplay(request, id):
         for i in range(len(context["mentors"])):
             mentor_id = context["mentors"][i]["id"]
             context["mentors"][i]["photo"] = \
-            SocialAccount.objects.get(user_id=club.mentor.get(id=mentor_id)).extra_data["picture"]
+                SocialAccount.objects.get(user_id=club.mentor.get(id=mentor_id)).extra_data["picture"]
         context["logo"] = str(club.logo_link).split("/")[-1]
 
         # TODO: send events
@@ -318,3 +314,19 @@ def clubDisplay(request, id):
         return render(request, 'view_club.html', context)
     else:
         return customhandler403(request, message="Club doesn't exist")
+
+
+def eventDisplay(request, club_id, event_id):
+    club = Club.objects.filter(id=club_id).first()
+    event = Event.objects.filter(pk=event_id).values().first()
+    event_tags = Event.objects.filter(pk=event_id).first().tag.values().all()
+    members = ClubMember.objects.filter(club_id=club).order_by("position__priority").all()
+    event["logo"] = str(event["logo"]).split("/")[-1]
+    context = {"members": [
+        {"member_id": member.id, "name": member.user_id.first_name + " " + member.user_id.last_name,
+         "email": member.user_id.email, "position": member.position.position,
+         "photo": SocialAccount.objects.get(user_id=member.user_id.id).extra_data["picture"]
+         } for member in
+        members], "club": club, "tags": event_tags, "mentors": club.mentor.values(), "event": event}
+    print(context)
+    return render(request, 'view_event.html', context)

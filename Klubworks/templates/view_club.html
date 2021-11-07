@@ -16,12 +16,12 @@
                     alt="">
                 <div class="d-inline float-end" style="min-height: 50px;min-width: 50px;">
                     <h1 id="club_name"
-                        style="font-size: 4em; margin: 10px;color: rgb(255,255,255);font-family: 'Bellota Text', serif;font-weight: bold;">{{ club.name }}</h1>
-                    <div id="club_tags">
+                        style="font-size: 3.5em; margin: 10px;color: rgb(255,255,255);font-family: 'Lato', serif;">{{ club.name }}</h1>
+                    <div id="club_tags" style="float: right">
                         {% for tag in tags %}
                             <button class="btn btn-danger"
-                                    style="border: none;height: 40px;margin-left: 0;color: rgb(255,255,255);background: #149eff;font-size: 11px;"
-                                    type="button" disabled>{{ tag.name }}
+                                    style="border: none;height: 40px;margin-left: 0;color: rgb(255,255,255);background: #6a04e9;font-size: 11px;"
+                                    type="button">{{ tag.name }}
                             </button>
                         {% endfor %}
                     </div>

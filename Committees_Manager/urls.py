@@ -33,6 +33,7 @@ urlpatterns = [
     path('club/create/', createClub, name="createClub"),
     path('club/approve/<int:id>', approveClub, name="approveClub"),
     path('club/<int:club_id>/event/view/', viewEvents, name="viewEvent"),
+    path('club/<int:club_id>/event/view/<int:event_id>', eventDisplay, name="eventDisplay"),
     path('club/<int:club_id>/event/delete/<int:event_id>', deleteEvent, name="deleteEvent"),
     path('club/<int:club_id>/event/edit/<int:event_id>', editEvent, name="editEvent"),
     path('club/<int:club_id>/event/create/', createEvent, name="createEvent"),

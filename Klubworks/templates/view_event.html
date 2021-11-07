@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_tags %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/Team-Clean.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Team-Grid.css' %}">
+{% endblock %}
+
+{% block main %}
+    <div class="container" style="margin-top: -10px">
+        <div class="row">
+            <div class="col-md-12" style="background: linear-gradient(90deg, rgb(102,39,242), rgb(220,53,69));"><img
+                    id="event_image" src="{% static 'img/event/' %}{{ event.logo }}"
+                    style="height: 200px;width: 200px;margin: 30px;box-shadow: 0 0 14px 5px rgba(255,255,255,0.47);"
+                    alt="">
+                <div class="float-end" style="min-height: 50px;min-width: 50px;">
+                    <div style="float: right;margin-right: 20px">
+                        <h1 id="event_name"
+                            style="float: right;font-size: 3.5em; margin: 10px;color: rgb(255,255,255);font-family: 'Lato', serif;font-weight: bold">{{ event.name }}</h1>
+                        <h2 id="club_name"
+                            style="float: right;clear: right;font-size: 2em; margin: 10px;color: rgb(255,255,255);font-family: 'Battambang', serif;">{{ club.name }}</h2>
+                        <button class="btn btn-success"
+                                style="float:right;clear: right;border: none;width: 151px;height: 37px;color: rgb(255,255,255);background: #8d87e3;margin-top: 10px;"
+                                type="button"
+                                {#                                onclick="location.href='{% url 'createEvent' club.id %}'"#}
+                        >Register &nbsp;
+                            <i class="fas fa-calendar-plus-o"></i>
+                        </button>
+                    </div>
+                    <div id="event_tags" style="float: right;clear: right">
+                        <div style="float: right">
+                            {% for tag in tags %}
+                                <button class="btn btn-danger"
+                                        style="border: none;height: 40px;margin-left: 0;color: rgb(255,255,255);background: #6a04e9;font-size: 11px;"
+                                        type="button">{{ tag.name }}
+                                </button>
+                            {% endfor %}
+
+                        </div>
+
+                        <div style="color: white; padding-bottom: 10px;float: right;clear: right">
+                            <span>Event Starts at {{ event.datetime }}</span><br>
+                            {% if event.link != "" %}
+                                <span><a style="text-decoration: none;color: white" target="_blank"
+                                         href="{{ event.link }}">Link &nbsp;<i
+
+                                        class="fas fa-link"></i></a>
+                                </span>
+                                <br>
+                            {% endif %}
+                            <span>Duration : {{ event.duration }}</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div style="min-height: 100px;">
+                    <h4 style="font-family: 'Bellota Text', serif;font-weight: bold;color: rgb(0,0,0);background: rgba(102,16,242,0.08);padding: 10px;margin-right: -12px;margin-left: -12px;border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;">
+                        Description</h4>
+                    <div style="min-height: 100px;margin-bottom: 10px;background: rgba(255,255,255,0);"><span
+                            id="club_desc" style="color: rgb(0,0,0);">{{ event.description }}</span></div>
+                </div>
+                <h4 style="font-family: 'Bellota Text', serif;font-weight: bold;color: rgb(0,0,0);background: rgba(102,16,242,0.08);padding: 10px;margin-right: -12px;margin-left: -12px;border-top-left-radius: 15px;border-top-right-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px;">
+                    Guests</h4>
+                <section class="team-clean">
+                    <div class="container">
+                        <div class="intro"></div>
+                        <div class="row people">
+                            WIP
+                            {#                            TODO GUESTS#}
+                        </div>
+                    </div>
+                </section>
+                <h4 style="font-family: 'Bellota Text', serif;font-weight: bold;color: rgb(0,0,0);background: rgba(102,16,242,0.08);padding: 10px;margin-right: -12px;margin-left: -12px;border-top-left-radius: 15px;border-top-right-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px;">
+                    Event Organizers</h4>
+                <section class="team-clean">
+                    <div class="container">
+                        <div class="row people">
+                            {% for member in members %}
+                                <div class="col-md-6 col-lg-4 item"
+                                     style="background-color: rgba(241,234,251,0.88);box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px"
+                                ><img class="rounded-circle"
+                                      src="{{ member.photo }}"
+                                      alt="{% static 'img/avatars/empty_profile.png' %}"
+                                >
+                                    <h3 class="name">{{ member.name }}</h3>
+                                    <p class="title">{{ member.position }}</p>
+                                    <p class="description">TODO</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+{% endblock %}
