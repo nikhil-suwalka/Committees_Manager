@@ -1,3 +1,4 @@
+from allauth.socialaccount.models import SocialAccount
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 
@@ -29,11 +30,11 @@ def customhandler403(request, message, template_name='403.html'):
 
 def modifyClub(request, id):
     if request.method == "POST":
-        club = Club.objects.filter(pk=id)
-        club.update(name=request.POST["name"], description=request.POST["description"],
-                    logo_link=request.POST["logo_link"])
-
-        club = club.get()
+        club = Club.objects.filter(pk=id).first()
+        club.name = request.POST["name"]
+        club.description = request.POST["description"]
+        club.logo_link = request.FILES["logo_link"]
+        club.save()
         club.type.clear()
         for type in request.POST.getlist("type"):
             club.type.add(Tag.objects.get(pk=type))
@@ -129,6 +130,29 @@ def deleteClub(request):
     pass
 
 
+def viewEvents(request, club_id):
+    club = Club.objects.filter(pk=club_id).first()
+    events = Event.objects.filter(club_id=club).values()
+    for event in events:
+        event["tag"] = Event.objects.filter(id=event["id"]).get().tag.all()
+
+    for i in range(len(events)):
+        events[i]["logo"] = str(events[i]["logo"]).split("/")[-1]
+
+    context = {'events': events, "club": club}
+    return render(request, 'view_events.html', context)
+
+
+def viewEvent(request, club_id, event_id):
+    club = Club.objects.filter(id=club_id).first()
+    event = Event.objects.filter(pk=event_id).first()
+
+
+def deleteEvent(request, club_id, event_id):
+    event = Event.objects.filter(id=event_id).delete()
+    return redirect("viewEvent", club_id=club_id)
+
+
 def createEvent(request, club_id):
     # print(getUserClubs(request))
     if request.method == "POST":
@@ -141,6 +165,7 @@ def createEvent(request, club_id):
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
         event.save()
+        return redirect("viewEvent", club_id=club_id)
 
     user_access = ClubMember.objects.filter(user_id=request.user.pk, club_id=club_id)
 
@@ -152,6 +177,40 @@ def createEvent(request, club_id):
 
     context = {'event_form': event_form}
     return render(request, 'create_event.html', context)
+
+
+def editEvent(request, club_id, event_id):
+    if request.method == "POST":
+        event = Event.objects.filter(id=event_id).first()
+        event.name = request.POST["name"]
+        event.datetime = datetime.fromisoformat(request.POST["datetime"])
+        event.start = datetime.fromisoformat(request.POST["start"])
+        event.end = datetime.fromisoformat(request.POST["end"])
+        event.visibility = (True if request.POST["visibility"] == "True" else False)
+        event.duration = request.POST["duration"]
+        event.description = request.POST["description"]
+        event.link = request.POST["link"]
+        event.logo = request.FILES["logo"]
+        event.tag.clear
+        for tag in request.POST.getlist("tag"):
+            event.tag.add(Tag.objects.get(pk=tag))
+        event.save()
+
+    user_access = ClubMember.objects.filter(user_id=request.user.pk, club_id=club_id)
+
+    # If user isn't a member of the club
+    if not user_access:
+        return customhandler403(request, message="You are not allowed to enter here")
+
+    event_form = EventForm(request.POST, request.FILES)
+    event = Event.objects.filter(id=event_id).values().first()
+    print(event)
+    event["datetime"] = event["datetime"].strftime("%Y-%m-%dT%H:%M")
+    event["start"] = event["start"].strftime("%Y-%m-%dT%H:%M")
+    event["end"] = event["end"].strftime("%Y-%m-%dT%H:%M")
+    print(event)
+    context = {'event_form': event_form, "event": event}
+    return render(request, 'edit_event.html', context)
 
 
 def manageRole(request, id):
@@ -213,7 +272,7 @@ def manageMember(request, id):
     all_users = User.objects.filter(user_type=0, is_superuser=False).all()
     all_users = [{"id": user.id, "name": user.first_name + " " + user.last_name, "email": user.email} for user in
                  all_users]
-    context = {"members": members, "club_id": id, "memberForm": MemberForm(request.POST), "users": all_users}
+    context = {"members": members, "club_id": id, "memberForm": MemberForm(request.POST,club_id = id), "users": all_users}
     return render(request, 'manage_members.html', context)
 
 
@@ -229,7 +288,7 @@ def editMember(request, club_id, member_id):
         member.save()
         return redirect("manageMember", id=club_id)
 
-    context = {"club_id": club_id, "memberForm": MemberEditForm(request.POST), "member": member}
+    context = {"club_id": club_id, "memberForm": MemberEditForm(request.POST,club_id=club_id), "member": member}
     return render(request, 'edit_member.html', context)
 
 
@@ -240,11 +299,18 @@ def clubDisplay(request, id):
         members = ClubMember.objects.filter(club_id=club).order_by("position__priority").all()
         context["members"] = [
             {"member_id": member.id, "name": member.user_id.first_name + " " + member.user_id.last_name,
-             "email": member.user_id.email, "position": member.position.position} for member in
+             "email": member.user_id.email, "position": member.position.position,
+             "photo": SocialAccount.objects.get(user_id=member.user_id.id).extra_data["picture"]
+
+             } for member in
             members]
         context["club"] = club
         context["tags"] = club.type.all()
-        context["mentors"] = club.mentor.all()
+        context["mentors"] = club.mentor.values()
+        for i in range(len(context["mentors"])):
+            mentor_id = context["mentors"][i]["id"]
+            context["mentors"][i]["photo"] = \
+            SocialAccount.objects.get(user_id=club.mentor.get(id=mentor_id)).extra_data["picture"]
         context["logo"] = str(club.logo_link).split("/")[-1]
 
         # TODO: send events

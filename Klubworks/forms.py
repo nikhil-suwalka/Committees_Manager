@@ -35,9 +35,19 @@ class MemberForm(forms.ModelForm):
         model = ClubMember
         fields = ['position']
 
+    def __init__(self,*args, **kwargs):
+        club_id = kwargs.pop('club_id')
+        super(MemberForm, self).__init__(*args, **kwargs)
+        self.fields["position"].queryset = ClubPosition.objects.filter(club_id=Club.objects.get(pk=club_id))
+
 
 class MemberEditForm(forms.ModelForm):
     user_id = forms.CharField(disabled=True, label="Name")
+
+    def __init__(self,*args, **kwargs):
+        club_id = kwargs.pop('club_id')
+        super(MemberEditForm, self).__init__(*args, **kwargs)
+        self.fields["position"].queryset = ClubPosition.objects.filter(club_id=Club.objects.get(pk=club_id))
 
     class Meta:
         model = ClubMember

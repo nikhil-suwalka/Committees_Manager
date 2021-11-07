@@ -1,38 +1,22 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% load custom_tags %}
-{% load static %}
+
 
 {% block main %}
-    {{ super }}
     <div style="margin-top: 40px;">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="page-header"></div>
+                    <div class="page-header">
+                        <h2>Update Event</h2>
                         <form class="form-horizontal" method="POST" enctype="multipart/form-data">
-                        <h2 class="form-group row">Modify Clubs Details
-                            <div class="btn-group btn-group-justified" role="group">
-                                <div class="btn-group" role="group" style="margin-left: -20px;margin-top: 10px">
-                                    <button class="btn btn-primary" onclick="location.href = '{% url 'manageRole' club.id %}'">Manage Roles</button>
-                                </div>
-                                <div class="btn-group" role="group" style="margin-left: -20px;margin-top: 10px">
-                                    <button class="btn btn-primary" onclick="location.href = '{% url 'manageMember' club.id %}'">Manage Members</button>
-                                </div>
-
-                            </div>
-                        </h2>
-                        <img src="
-                                {% static 'clubs_images/' %}{{ club|get_item_from_model_obj:club_form.logo_link.html_name }}"
-                             alt="">
                             {% csrf_token %}
-                            {% for field in club_form %}
+                            {% for field in event_form %}
                                 <div class="form-group row">
                                     <div class="col-sm-6">
                                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-
-
-                                        {% render_field field class="form-control" value=club|get_item_from_model_obj:field.html_name %}
+                                        {% render_field field class="form-control" value=event|get_item:field.html_name %}
                                     </div>
                                 </div>
                             {% endfor %}

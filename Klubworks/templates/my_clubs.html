@@ -62,6 +62,10 @@
                                             onclick="location.href='{% url 'modifyClub' club.id %}'"
                                             class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
                                     </button>
+                                    <button type="button" class="btn btn-success"><i
+                                            onclick="location.href='{% url 'viewEvent' club.id %}'"
+                                            class="fas fa-calendar d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                    </button>
                                 </td>
                             </tr>
                         {% endfor %}

@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container">
+    <div class="container" style="margin-top: -10px">
         <div class="row">
             <div class="col-md-12" style="background: linear-gradient(90deg, rgb(102,39,242), rgb(220,53,69));"><img
                     id="club_image" src="{% static 'img/club/' %}{{ logo }}"
@@ -44,11 +44,11 @@
                         <div class="row people">
                             {% for mentor in mentors %}
                                 <div class="col-md-6 col-lg-4 item"
-                                     style="box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px">
-                                    <img class="rounded-circle"
-                                         src="{% static 'img/avatars/empty_profile.png' %}"
-                                         alt="">
-                                    <h3 class="name">{{ mentor }}</h3>
+                                     style="background-color: rgba(241,234,251,0.88);box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px"
+                                ><img class="rounded-circle"
+                                         src="{{ mentor.photo }}"
+                                      alt="{% static 'img/avatars/empty_profile.png' %}">
+                                    <h3 class="name">{{ mentor.first_name }} {{ mentor.last_name }}</h3>
                                     <p class="title">TODO</p>
                                     <p class="description">TODO</p>
                                 </div>
@@ -63,10 +63,11 @@
                         <div class="row people">
                             {% for member in members %}
                                 <div class="col-md-6 col-lg-4 item"
-                                     style="box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px"
+                                     style="background-color: rgba(241,234,251,0.88);box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px"
                                 ><img class="rounded-circle"
-                                      src="{% static 'img/avatars/empty_profile.png' %}"
-                                      alt="">
+                                      src="{{ member.photo }}"
+                                      alt="{% static 'img/avatars/empty_profile.png' %}"
+                                      >
                                     <h3 class="name">{{ member.name }}</h3>
                                     <p class="title">{{ member.position }}</p>
                                     <p class="description">TODO</p>
