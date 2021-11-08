@@ -18,6 +18,7 @@
   box-sizing: border-box;
   -webkit-transition: all 0.25s ease;
   transition: all 0.25s ease;
+  width: 100%;
 }
 
 .snip1527 img {
@@ -31,6 +32,7 @@
   position: absolute;
   bottom: 0;
   z-index: 1;
+  height: 175px;
 }
 
 .snip1527 figcaption:before {
@@ -46,8 +48,9 @@
   background: linear-gradient(90deg, #7e70f5 0%, #119fff 100%, #ff2759 100%);
   opacity: 0.8;
   z-index: -1;
-  min-width: 250px;
+  min-width: 310px;
   max-width: 310px;
+
 }
 
 .snip1527 .date {
@@ -56,14 +59,17 @@
   color: #700877;
   font-size: 18px;
   font-weight: 700;
-  min-height: 48px;
-  min-width: 48px;
+  /*min-height: 48px;*/
+  /*min-width: 48px;*/
+  /*position: absolute;*/
+  /*right: 15px;*/
+  height: 48px;
+  width: 48px;
   padding: 10px 0;
-  position: absolute;
-  right: 15px;
+  float: right;
+  margin-top: -48px ;
   text-align: center;
   text-transform: uppercase;
-  top: -25px;
 }
 
 .snip1527 .date span {
