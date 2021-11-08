@@ -349,8 +349,11 @@ def getUpcomingVisibleEvents(club_id: int = None):
 def getAllActiveClubs():
     events = Event.objects.filter(visibility=True).order_by("-end").all()
     clubs = []
+    club_name = {}
     for event in events:
-        clubs.append(event.club_id)
+        if not club_name.get(event.club_id.name,False):
+            clubs.append(event.club_id)
+            club_name[event.club_id.name] = True
     return clubs[:10]
 
 
