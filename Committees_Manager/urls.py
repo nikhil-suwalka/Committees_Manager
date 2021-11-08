@@ -43,4 +43,5 @@ urlpatterns = [
     path('club/member/<int:id>', manageMember, name="manageMember"),
     path('club/member/<int:club_id>/remove/<int:user_id>', deleteMember, name="deleteMember"),
     path('club/member/<int:club_id>/edit/<int:member_id>', editMember, name="editMember"),
+    path('search', search, name="search"),
 ]

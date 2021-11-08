@@ -1,5 +1,7 @@
 from django.template.defaulttags import register
 
+from Klubworks.models import *
+
 ...
 
 
@@ -23,3 +25,5 @@ def ellipsis(para):
     if len(str(para)) > 125:
         return para[:125] + "..."
     return para
+
+

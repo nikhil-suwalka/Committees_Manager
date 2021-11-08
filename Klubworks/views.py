@@ -1,3 +1,5 @@
+import json
+
 from allauth.socialaccount.models import SocialAccount
 from django.core.mail import send_mail
 from django.db.models import Q
@@ -8,7 +10,7 @@ from Klubworks.models import User
 
 
 def homeView(request):
-    context = {"events": getUpcomingVisibleEvents(),"clubs":getAllActiveClubs()}
+    context = {"events": getUpcomingVisibleEvents(), "clubs": getAllActiveClubs()}
     return render(request, 'index.html', context)
 
 
@@ -196,7 +198,7 @@ def editEvent(request, club_id, event_id):
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
         event.save()
-        return redirect("viewEvent",club_id=club_id)
+        return redirect("viewEvent", club_id=club_id)
 
     user_access = ClubMember.objects.filter(user_id=request.user.pk, club_id=club_id)
 
@@ -346,12 +348,13 @@ def getUpcomingVisibleEvents(club_id: int = None):
         events = Event.objects.filter(visibility=True).filter(Q(end__gte=datetime.now())).order_by("-end").all()
     return events[:10]
 
+
 def getAllActiveClubs():
-    events = Event.objects.filter(visibility=True).order_by("-end").all()
+    events = Event.objects.filter(visibility=True).order_by("-start").all()
     clubs = []
     club_name = {}
     for event in events:
-        if not club_name.get(event.club_id.name,False):
+        if not club_name.get(event.club_id.name, False):
             clubs.append(event.club_id)
             club_name[event.club_id.name] = True
     return clubs[:10]
@@ -361,3 +364,39 @@ def getAllVisibleEvents(club_id: int):
     events = Event.objects.filter(club_id=club_id).filter(Q(end__gte=datetime.now())).order_by(
         "-end").all()
     return events[:10]
+
+
+def getOrganizersFromEventID(event_id):
+    event = Event.objects.filter(id=event_id).first()
+    members = ClubMember.objects.filter(club_id=event.club_id.id).all()
+    result = ""
+    for member in members:
+        result += member.user_id.first_name + " " + member.user_id.last_name + ", "
+    return result[:-2]
+
+
+def search(request):
+    events_raw = Event.objects.filter(visibility=True).order_by("-start")
+    events = events_raw.values().all()
+    for i in range(len(events)):
+        events[i]["tags"] = [tag.name for tag in events_raw.filter(id=events[i]["id"]).first().tag.all()]
+        events[i]["club_name"] = events_raw.filter(id=events[i]["id"]).first().club_id.name
+
+    data = []
+    for event in events:
+        print(event)
+        e = {
+            'name': event["name"],
+            'club_id': event["club_id_id"],
+            'event_id': event["id"],
+            'club_name': event["club_name"],
+            'description': event["description"],
+            'start_date': event["start"].strftime("%d/%m/%Y, %H:%M"),
+            'tags': " ".join(event["tags"]),
+            'guests': "TODO",
+            'members': getOrganizersFromEventID(event["id"])
+        }
+        data.append(e)
+    print(data)
+    context = {"json_data": json.dumps(data)}
+    return render(request, 'search.html', context)
