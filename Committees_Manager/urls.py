@@ -23,7 +23,7 @@ from Klubworks.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name="index.html")),
+    path('', homeView, name="homeView"),
     path('accounts/', include('allauth.urls')),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('profile/', profile, name="profile"),

@@ -1,9 +1,16 @@
 from allauth.socialaccount.models import SocialAccount
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.shortcuts import render, redirect
 
 from Klubworks.forms import *
 from Klubworks.models import User
+
+
+def homeView(request):
+    context = {"events": getUpcomingVisibleEvents()}
+
+    return render(request, 'index.html', context)
 
 
 def profile(request):
@@ -199,7 +206,6 @@ def editEvent(request, club_id, event_id):
 
     event = Event.objects.filter(id=event_id).values().first()
     event_form = EventForm(event=Event.objects.filter(id=event_id).first())
-    print(event)
     event["datetime"] = event["datetime"].strftime("%Y-%m-%dT%H:%M")
     event["start"] = event["start"].strftime("%Y-%m-%dT%H:%M")
     event["end"] = event["end"].strftime("%Y-%m-%dT%H:%M")
@@ -330,3 +336,12 @@ def eventDisplay(request, club_id, event_id):
         members], "club": club, "tags": event_tags, "mentors": club.mentor.values(), "event": event}
     print(context)
     return render(request, 'view_event.html', context)
+
+
+def getUpcomingVisibleEvents(club_id: int = None):
+    if club_id:
+        events = Event.objects.filter(club_id=club_id, visibility=True).filter(Q(end__gte=datetime.now())).order_by(
+            "-end").all()
+    else:
+        events = Event.objects.filter(visibility=True).filter(Q(end__gte=datetime.now())).order_by("-end").all()
+    return events[:10]
