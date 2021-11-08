@@ -8,8 +8,7 @@ from Klubworks.models import User
 
 
 def homeView(request):
-    context = {"events": getUpcomingVisibleEvents()}
-
+    context = {"events": getUpcomingVisibleEvents(),"clubs":getAllActiveClubs()}
     return render(request, 'index.html', context)
 
 
@@ -315,7 +314,7 @@ def clubDisplay(request, id):
             context["mentors"][i]["photo"] = \
                 SocialAccount.objects.get(user_id=club.mentor.get(id=mentor_id)).extra_data["picture"]
         context["logo"] = str(club.logo_link).split("/")[-1]
-
+        context["events"] = getAllVisibleEvents(id)
         # TODO: send events
 
         return render(request, 'view_club.html', context)
@@ -345,4 +344,17 @@ def getUpcomingVisibleEvents(club_id: int = None):
             "-end").all()
     else:
         events = Event.objects.filter(visibility=True).filter(Q(end__gte=datetime.now())).order_by("-end").all()
+    return events[:10]
+
+def getAllActiveClubs():
+    events = Event.objects.filter(visibility=True).order_by("-end").all()
+    clubs = []
+    for event in events:
+        clubs.append(event.club_id)
+    return clubs[:10]
+
+
+def getAllVisibleEvents(club_id: int):
+    events = Event.objects.filter(club_id=club_id).filter(Q(end__gte=datetime.now())).order_by(
+        "-end").all()
     return events[:10]

@@ -30,52 +30,24 @@
     </section>
     <section class="portfolio-block photography">
         <div class="container">
-            <h3 style="margin-top: 50px;"><i class="fa fa-users" style="color: var(--bs-indigo);"></i>&nbsp; Active
+            <h3 style="margin-top: 50px;"><i class="fa fa-flag" style="color: var(--bs-indigo);"></i>&nbsp; Active
                 Clubs</h3>
             <div class="row g-0">
-                <figure class="snip1527">
-                    <div class="image"><img
-                            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/pr-sample23.jpg"
-                            alt="pr-sample23"/></div>
-                    <figcaption>
-                        <h3>The World Ended Yesterday</h3>
-                        <p>
-
-                            You know what we need, Hobbes? We need an attitude. Yeah, you can't be cool if you don't
-                            have an attitude.
-                        </p>
-                    </figcaption>
-                    <a href="#"></a>
-                </figure>
-                <figure class="snip1527 hover">
-                    <div class="image"><img
-                            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/pr-sample24.jpg"
-                            alt="pr-sample24"/></div>
-                    <figcaption>
-                        <h3>An Abstract Post Heading</h3>
-                        <p>
-
-                            Sometimes the surest sign that intelligent life exists elsewhere in the universe is that
-                            none of it has tried to contact us.
-                        </p>
-                    </figcaption>
-                    <a href="#"></a>
-                </figure>
-                <figure class="snip1527">
-                    <div class="image"><img
-                            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/pr-sample25.jpg"
-                            alt="pr-sample25"/></div>
-                    <figcaption>
-                        <h3>Down with this sort of thing</h3>
-                        <p>
-
-                            I don't need to compromise my principles, because they don't have the slightest bearing
-                            on
-                            what happens to me anyway.
-                        </p>
-                    </figcaption>
-                    <a href="#"></a>
-                </figure>
+                {% for club in clubs %}
+                    <figure class="snip1527" onclick="location.href='{% url 'clubDisplay' club.id %}'">
+                        <div style="height: 350px">
+                            <img style="object-fit:scale-down;height: 350px;margin-top: -75px"
+                                src="{% static 'img/club/' %}{{ club.logo_link|get_image_name_from_path }}"
+                                alt="pr-sample23"/></div>
+                        <figcaption>
+                            <h3>{{ club.name }}</h3>
+                            <p>
+                               {{ club.description|ellipsis }}
+                            </p>
+                        </figcaption>
+                        <a href="#"></a>
+                    </figure>
+                {% endfor %}
             </div>
         </div>
     </section>

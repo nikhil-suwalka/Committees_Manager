@@ -9,8 +9,9 @@
 
 {% block main %}
     <div class="container" style="margin-top: -10px">
-        <div class="row" >
-            <div class="col-md-12" style="background: linear-gradient(90deg, rgba(102,39,242,0.8), rgba(220,53,69,0.8));"><img
+        <div class="row">
+            <div class="col-md-12"
+                 style="background: linear-gradient(90deg, rgba(102,39,242,0.8), rgba(220,53,69,0.8));"><img
                     id="club_image" src="{% static 'img/club/' %}{{ logo }}"
                     style="height: 200px;width: 200px;margin: 15px;box-shadow: 0 0 14px 5px rgba(255,255,255,0.47);"
                     alt="">
@@ -46,7 +47,7 @@
                                 <div class="col-md-6 col-lg-4 item"
                                      style="background-color: rgba(241,234,251,0.88);box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px"
                                 ><img class="rounded-circle"
-                                         src="{{ mentor.photo }}"
+                                      src="{{ mentor.photo }}"
                                       alt="{% static 'img/avatars/empty_profile.png' %}">
                                     <h3 class="name">{{ mentor.first_name }} {{ mentor.last_name }}</h3>
                                     <p class="title">TODO</p>
@@ -67,7 +68,7 @@
                                 ><img class="rounded-circle"
                                       src="{{ member.photo }}"
                                       alt="{% static 'img/avatars/empty_profile.png' %}"
-                                      >
+                                >
                                     <h3 class="name">{{ member.name }}</h3>
                                     <p class="title">{{ member.position }}</p>
                                     <p class="description">TODO</p>
@@ -77,10 +78,30 @@
                     </div>
                 </section>
                 <h4 style="font-family: 'Bellota Text', serif;font-weight: bold;color: rgb(0,0,0);background: rgba(102,16,242,0.08);padding: 10px;margin-right: -12px;margin-left: -12px;border-top-left-radius: 15px;border-top-right-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px;">
-                    Events</h4>
-                <section class="team-grid">
+                    All Events</h4>
+                <section class="portfolio-block photography">
                     <div class="container">
-
+                        <div class="row g-0">
+                            {% for event in events %}
+                                <figure class="snip1527"
+                                        onclick="location.href='{% url 'eventDisplay' event.club_id.id event.id %}'">
+                                    <div style="height: 350px">
+                                        <img style="object-fit:cover;height: 350px"
+                                             src="{% static 'img/event/' %}{{ event.logo|get_image_name_from_path }}"
+                                             alt="pr-sample23"/></div>
+                                    <figcaption>
+                                        <div class="date"><span class="day">{{ event.start.day }}</span><span
+                                                class="month">{{ event.start|date:'M' }}</span></div>
+                                        <h3>{{ event.name }}</h3>
+                                        <h5>{{ event.club_id.name }}</h5>
+                                        <p>
+                                            {{ event.description|ellipsis }}
+                                        </p>
+                                    </figcaption>
+                                    <a href="#"></a>
+                                </figure>
+                            {% endfor %}
+                        </div>
                     </div>
                 </section>
             </div>
