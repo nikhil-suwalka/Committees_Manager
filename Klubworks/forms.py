@@ -103,3 +103,13 @@ class EventForm(forms.ModelForm):
 
         }
         exclude = ["club_id", "created_by"]
+
+    def __init__(self, event=None, *args, **kwargs):
+        super(EventForm, self).__init__(*args, **kwargs)
+
+        if event:
+            self.fields["tag"].initial = event.tag.all()
+
+
+
+

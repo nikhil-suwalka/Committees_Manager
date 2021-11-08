@@ -186,7 +186,7 @@ def editEvent(request, club_id, event_id):
         event.description = request.POST["description"]
         event.link = request.POST["link"]
         event.logo = request.FILES["logo"]
-        event.tag.clear
+        event.tag.clear()
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
         event.save()
@@ -197,8 +197,8 @@ def editEvent(request, club_id, event_id):
     if not user_access:
         return customhandler403(request, message="You are not allowed to enter here")
 
-    event_form = EventForm(request.POST, request.FILES)
     event = Event.objects.filter(id=event_id).values().first()
+    event_form = EventForm(event=Event.objects.filter(id=event_id).first())
     print(event)
     event["datetime"] = event["datetime"].strftime("%Y-%m-%dT%H:%M")
     event["start"] = event["start"].strftime("%Y-%m-%dT%H:%M")
@@ -313,7 +313,7 @@ def clubDisplay(request, id):
 
         return render(request, 'view_club.html', context)
     else:
-        return customhandler403(request, message="Club doesn't exist")
+        return customhandler403(request, message="Club doesn't exist or isn't approved yet")
 
 
 def eventDisplay(request, club_id, event_id):
