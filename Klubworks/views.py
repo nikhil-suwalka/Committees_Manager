@@ -197,6 +197,7 @@ def editEvent(request, club_id, event_id):
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
         event.save()
+        return redirect("viewEvent",club_id=club_id)
 
     user_access = ClubMember.objects.filter(user_id=request.user.pk, club_id=club_id)
 
