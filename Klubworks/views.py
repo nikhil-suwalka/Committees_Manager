@@ -400,3 +400,7 @@ def search(request):
     print(data)
     context = {"json_data": json.dumps(data)}
     return render(request, 'search.html', context)
+
+
+def form(request):
+    return render(request, 'form.html', {})
