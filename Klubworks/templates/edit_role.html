@@ -16,6 +16,7 @@
                                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                                         {% render_field field class="form-control" value=role|get_item_from_model_obj:field.html_name%}
                                     </div>
+
                                 </div>
                             {% endfor %}
                             <br>

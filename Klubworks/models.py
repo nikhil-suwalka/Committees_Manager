@@ -85,6 +85,8 @@ class Event(models.Model):
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_created_by")
 
+    feedback_form_sent = models.BooleanField(default=False)
+
     def __str__(self):
         return str(self.name)
 
@@ -96,9 +98,14 @@ class EventAttendance(models.Model):
 
 class Form(models.Model):
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="form_eventid")
+    form_name = models.CharField(blank=False, null=False, max_length=1000)
     form_start = models.DateTimeField(null=False, blank=False)
     form_end = models.DateTimeField(null=False, blank=False)
-    form_structure = models.CharField(blank=False, null=False, max_length=1000)
+    form_structure = models.CharField(blank=False, null=False, max_length=100000)
+
+    TYPES = ((0, "Register Form"), (1, "Feedback Form"), (2, "Custom Form"))
+
+    form_type = models.IntegerField(default=0, choices=TYPES)
 
 
 class FormSubmission(models.Model):

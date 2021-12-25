@@ -57,7 +57,7 @@
                                                 alt="">
                                     </div>
                                 </td>
-                                <td onclick="location.href='{% url 'eventDisplay' club.id event.id %}'">{{ event.name }}</td>
+                                <td onclick="location.href='{% url 'eventDisplay' club.id event.id %}'" style="cursor: pointer">{{ event.name }}</td>
                                 <td>{{ event.datetime }}</td>
                                 <td>{{ event.start }}</td>
                                 <td>{{ event.end }}</td>
@@ -92,6 +92,10 @@
                                     <button type="button" class="btn btn-warning"><i
                                             onclick="location.href='{% url 'editEvent' club.id event.id %}'"
                                             class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success">
+                                        <i onclick="location.href='{% url 'viewEventForms' club.id event.id %}'"
+                                           class="fas fa fa-edit d-xl-flex justify-content-xl-center align-items-xl-center"></i>
                                     </button>
                                 </td>
                             </tr>

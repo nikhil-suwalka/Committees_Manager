@@ -4,12 +4,14 @@ from allauth.socialaccount.models import SocialAccount
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from Klubworks.forms import *
 from Klubworks.models import User
 
 
 def homeView(request):
+    notify_user()
     context = {"events": getUpcomingVisibleEvents(), "clubs": getAllActiveClubs()}
     return render(request, 'index.html', context)
 
@@ -123,13 +125,19 @@ def createClub(request):
 
 
 def viewClub(request):
-    clubs_member = ClubMember.objects.filter(user_id=request.user.id)
-    clubs = None
-    if clubs_member is not None:
-        clubs = Club.objects.filter(id__in=[c.club_id.id for c in clubs_member]).values()
+    user = request.user
+    if user.user_type == 0:
+        clubs_member = ClubMember.objects.filter(user_id=request.user.id)
+        clubs = None
+        if clubs_member is not None:
+            clubs = Club.objects.filter(id__in=[c.club_id.id for c in clubs_member]).values()
 
-    for club in clubs:
-        club["tags"] = Club.objects.filter(id=club["id"]).get().type.all()
+        for club in clubs:
+            club["tags"] = Club.objects.filter(id=club["id"]).get().type.all()
+    else:
+
+        # TODO: add logic so mentor can edit clubs which they are mentor of
+        clubs = Club.objects.filter(mentor=user).all()
     context = {'user': request.user, 'clubs': clubs}
     return render(request, 'my_clubs.html', context)
 
@@ -218,7 +226,7 @@ def editEvent(request, club_id, event_id):
 
 def manageRole(request, id):
     if request.method == "POST":
-        role = ClubPosition.objects.filter(position=request.POST["position"]).all()
+        role = ClubPosition.objects.filter(position=request.POST["position"], club_id=Club.objects.get(id=id)).all()
         if not role:
             new_role = ClubPosition.objects.create(club_id=Club.objects.get(id=id), position=request.POST["position"],
                                                    priority=request.POST["priority"],
@@ -291,8 +299,10 @@ def editMember(request, club_id, member_id):
         member.position = ClubPosition.objects.get(id=int(request.POST["position"]))
         member.save()
         return redirect("manageMember", id=club_id)
-
-    context = {"club_id": club_id, "memberForm": MemberEditForm(request.POST, club_id=club_id), "member": member}
+    print(member.position)
+    context = {"club_id": club_id,
+               "memberForm": MemberEditForm(request.POST, club_id=club_id, member_id=member.position.id),
+               "member": member}
     return render(request, 'edit_member.html', context)
 
 
@@ -336,6 +346,12 @@ def eventDisplay(request, club_id, event_id):
          "photo": SocialAccount.objects.get(user_id=member.user_id.id).extra_data["picture"]
          } for member in
         members], "club": club, "tags": event_tags, "mentors": club.mentor.values(), "event": event}
+
+    form = Form.objects.filter(event_id=Event.objects.filter(id=event_id).first(), form_type=0).first()
+    if form:
+        url1 = request.build_absolute_uri(reverse("fillEventForm", args=(club_id, event_id, form.id)))
+        print(url1)
+        context["register_form"] = url1
     print(context)
     return render(request, 'view_event.html', context)
 
@@ -402,5 +418,64 @@ def search(request):
     return render(request, 'search.html', context)
 
 
-def form(request):
-    return render(request, 'form.html', {})
+def viewEventForms(request, club_id, event_id):
+    club = Club.objects.filter(id=club_id).first()
+    event = Event.objects.filter(id=event_id).first()
+    forms = list(Form.objects.filter(event_id=event).values())
+    types = {0: "Register Form", 1: "Feedback Form", 2: "Custom Form"}
+    for i in range(len(forms)):
+        forms[i]["form_type"] = types[forms[i]["form_type"]]
+
+    context = {"club": club, "event": event, "forms": forms}
+    return render(request, 'view_event_forms.html', context)
+
+
+def createEventForm(request, club_id, event_id):
+    if request.method == "POST":
+        open_date = datetime.fromisoformat(request.POST["open-date"])
+        close_date = datetime.fromisoformat(request.POST["close-date"])
+        form_name = request.POST["form-name"]
+        form_type = int(request.POST["form-type"])
+        form_data = request.POST["formdata"]
+
+        Form.objects.create(event_id=Event.objects.filter(id=event_id).first(), form_name=form_name,
+                            form_start=open_date,
+                            form_end=close_date, form_type=form_type, form_structure=form_data)
+        return redirect("viewEventForms", club_id=club_id, event_id=event_id)
+
+    options = ["Register Form", "Feedback Form"]
+    available_options = []
+    for i in range(2):
+        if Form.objects.filter(event_id=Event.objects.filter(id=event_id).first(), form_type=i).all().count() == 0:
+            available_options.append((i, options[i]))
+    available_options.append((2, "Custom Form"))
+    print(available_options)
+    return render(request, 'form.html', context={"options": available_options})
+
+
+import json
+
+
+def fillEventForm(request, club_id, event_id, form_id):
+    form = Form.objects.filter(id=form_id).first()
+    if request.method == "POST":
+        submitted_form = json.loads(request.POST["formdata"])
+        submission_dict = {}
+
+        for data in submitted_form:
+            if data["type"] in ["select", "radio-group", "checkbox-group"]:
+                selections = []
+                for selection in data["userData"]:
+                    for value in data["values"]:
+                        if value["value"] == selection:
+                            selections.append(value["label"])
+                            break
+                submission_dict[data["label"]] = selections
+
+            else:
+                submission_dict[data["label"]] = data["userData"]
+        print(submission_dict)
+        FormSubmission.objects.create(user_id=request.user, form_id=form, form_data=submission_dict)
+
+    return render(request, 'fill_form.html', context={"form": form})
+

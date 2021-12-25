@@ -2,27 +2,98 @@
 {% load static %}
 
 {% block head %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
+    <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
 {% endblock %}
 
 
 {% block main %}
     <div style="margin-top: 40px;margin-bottom: 40px">
         <div class="container">
+
             <div class="row">
                 <div class="col-md-4">
                     <h2 style="width: 343px;">Design your Form</h2>
                 </div>
             </div>
-            <div class="row" style="margin: 10px">
-            </div>
-            <div id="fb-editor"></div>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-            <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
+            <form name="myform" method="post">
+                <div style="padding: 5px">
+                    <label> Name
+                        <input name="form-name" type="text" style="display: inline-block; margin: 15px">
+                    </label>
+                    <label> Open Date
+                        <input name="open-date" type="datetime-local" style="display: inline-block; margin: 15px">
+                    </label>
+                    <label> Close Date
+                        <input name="close-date" type="datetime-local" style="display: inline-block; margin: 15px">
+                    </label>
+
+                    <label>Form Type
+                        <select name="form-type" style="display:inline-block; margin: 15px">
+                            {% for option in options %}
+                                <option value="{{ option.0 }}" > {{ option.1}}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+                <hr style="height: 2px; margin-bottom: 30px">
+
+
+                <div id="build-wrap"></div>
+                <div class="render-wrap" style="display: none"></div>
+
+                {% csrf_token %}
+                <button type="button" id="edit-form" style="display: none">Edit Form</button>
+                <button id="form-save" style="display: none">Submit Form</button>
+                <input name="formdata" id="form-data" type="text" value="" hidden>
+            </form>
+
             <script>
                 jQuery(function ($) {
-                    $(document.getElementById('fb-editor')).formBuilder();
+                    var fbTemplate = document.getElementById("build-wrap");
+                    var options = {
+                        onSave: function (evt, formData) {
+                            console.log("formbuilder saved");
+                            toggleEdit(false);
+                            console.log(formData);
+                            $(".render-wrap").formRender({formData});
+                            $("#edit-form").css("display", "inline-block");
+                            $("#build-wrap").css("display", "none");
+                            $(".render-wrap").css("display", "block");
+                            $("#form-save").css("display", "inline-block");
+                            $("#form-data").attr('value', formData.toString());
+                            console.log(formData);
+
+
+                        }
+                    };
+                    $(fbTemplate).formBuilder(options);
+
+                    $("#edit-form").click(function () {
+                        $("#edit-form").css("display", "none");
+                        $("#build-wrap").css("display", "block");
+                        $("#render-wrap").css("display", "none");
+                        $("#form-save").css("display", "none");
+
+                    });
                 });
+
+
+                /**
+                 * Toggles the edit mode for the demo
+                 * @return {Boolean} editMode
+                 */
+                function toggleEdit(editing) {
+                    document.body.classList.toggle("form-rendered", !editing);
+                }
+
+                document.getElementById("edit-form").onclick = function () {
+                    toggleEdit(true);
+                };
+
+
             </script>
         </div>
     </div>

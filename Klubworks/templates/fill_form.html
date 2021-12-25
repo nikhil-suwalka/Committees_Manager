@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
+    <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
+{% endblock %}
+
+
+{% block main %}
+    <div style="margin-top: 40px;margin-bottom: 40px">
+        <div class="container">
+
+            <div class="row">
+                <div>
+                    <h2>{{ form.form_name }}</h2>
+                </div>
+            </div>
+            <form name="myform" method="post" id="form">
+                {% csrf_token %}
+
+                <div id="fb-render"></div>
+                <input type="text" name="formdata" id="formdata" hidden>
+                <button id="form-save" type="button">Submit Form</button>
+
+            </form>
+
+            <script>
+                jQuery(function ($) {
+                    var fbRender = document.getElementById('fb-render'),
+                        formData = '{{ form.form_structure|safe }}';
+
+                    var formRenderOpts = {
+                        formData,
+                        dataType: 'json'
+                    };
+
+                    $(fbRender).formRender(formRenderOpts);
+
+                    $("#form-save").click(function () {
+                        $("#formdata").val(JSON.stringify($(fbRender).formRender("userData")));
+                        $("#form").submit();
+                    });
+
+                });
+
+
+            </script>
+        </div>
+    </div>
+{% endblock %}
