@@ -11,7 +11,6 @@ from Klubworks.models import User
 
 
 def homeView(request):
-    notify_user()
     context = {"events": getUpcomingVisibleEvents(), "clubs": getAllActiveClubs()}
     return render(request, 'index.html', context)
 
