@@ -3,11 +3,14 @@ import json
 from allauth.socialaccount.models import SocialAccount
 from django.core.mail import send_mail
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from Klubworks.forms import *
 from Klubworks.models import User
+import csv
+import Klubworks.FormType as FormType
 
 
 def homeView(request):
@@ -346,7 +349,7 @@ def eventDisplay(request, club_id, event_id):
          } for member in
         members], "club": club, "tags": event_tags, "mentors": club.mentor.values(), "event": event}
 
-    form = Form.objects.filter(event_id=Event.objects.filter(id=event_id).first(), form_type=0).first()
+    form = Form.objects.filter(event_id=Event.objects.filter(id=event_id).first(), form_type=FormType.REGISTRATION).first()
     if form:
         url1 = request.build_absolute_uri(reverse("fillEventForm", args=(club_id, event_id, form.id)))
         print(url1)
@@ -419,7 +422,7 @@ def search(request):
 
 def viewRegisteredEvents(request):
     user = request.user
-    formSubmitted = FormSubmission.objects.filter(user_id=user, form_id__form_type=0).all()
+    formSubmitted = FormSubmission.objects.filter(user_id=user, form_id__form_type=FormType.REGISTRATION).all()
     eventIds = [id.form_id.event_id.id for id in formSubmitted]
     events_raw = Event.objects.filter(id__in=eventIds).all()
     events = list(events_raw.values())
@@ -499,9 +502,9 @@ def statsEvent(request, club_id, event_id):
     club = Club.objects.filter(id=club_id).first()
     event = Event.objects.filter(id=event_id).first()
 
-    regSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=0).all()
-    fbSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=1).all()
-    customSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=2).all()
+    regSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=FormType.REGISTRATION).all()
+    fbSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=FormType.FEEDBACK).all()
+    customSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=FormType.CUSTOM).all()
     allSub_raw = FormSubmission.objects.filter(form_id__event_id=event).all()
     all_sub = {}
     for sub in allSub_raw:
@@ -538,3 +541,40 @@ def statsEvent(request, club_id, event_id):
                "outside_participant_count": outside_participant_count,
                "charts": all_form_charts}
     return render(request, "view_stats_event.html", context=context)
+
+def download_csv(request, club_id, event_id, form_id):
+    print("DOWNLOAD CSV")
+    form = Form.objects.filter(id=form_id).first()
+
+    response = HttpResponse(content_type='text/csv')
+    form_name = form.form_name.replace(" ", "_")
+    response['Content-Disposition'] = f'attachment; filename="{form_name}.csv"'
+    writer = csv.writer(response)
+
+    header_row = ['First Name', 'Last Name', 'Email', 'UID', 'College Name', 'Address', 'Phone number', 'Fill Time']
+
+    form = Form.objects.filter(id=form_id).first()
+    all_registrations = FormSubmission.objects.filter(form_id=form).all()
+
+    if all_registrations.count():
+        registrations = all_registrations.values_list(
+            "user_id__first_name", "user_id__last_name", "user_id__email",
+            "user_id__uid", "user_id__college_name", "user_id__address", "user_id__phone_no",
+            "filled_time")
+        form_datas = all_registrations.values_list("form_data")
+
+        json_form_data = json.loads(form_datas[0][0].replace("'", '"'))
+        print(json_form_data)
+        for data in json_form_data:
+            header_row.append(data)
+
+        writer.writerow(header_row)
+
+        for i in range(len(registrations)):
+            json_data = json.loads(form_datas[i][0].replace("'", '"'))
+
+            data = tuple((json_data[i] for i in json_data))
+            print(data)
+            writer.writerow(registrations[i] + data)
+
+    return response

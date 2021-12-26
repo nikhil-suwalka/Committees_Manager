@@ -21,9 +21,8 @@ class KlubworksConfig(AppConfig):
 
     def check_feedback_form(self):
         from .models import Event, Form, FormSubmission
-        from django.core.mail import send_mail, EmailMessage
+        from django.core.mail import EmailMessage
         from django.template.loader import render_to_string
-        from django.utils.html import strip_tags
 
         while True:
             event_feedback_form = {}

@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import Klubworks.FormType as FormType
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -103,7 +103,9 @@ class Form(models.Model):
     form_end = models.DateTimeField(null=False, blank=False)
     form_structure = models.CharField(blank=False, null=False, max_length=100000)
 
-    TYPES = ((0, "Register Form"), (1, "Feedback Form"), (2, "Custom Form"))
+    TYPES = (
+        (FormType.REGISTRATION, "Register Form"), (FormType.FEEDBACK, "Feedback Form"),
+        (FormType.CUSTOM, "Custom Form"))
 
     form_type = models.IntegerField(default=0, choices=TYPES)
 
