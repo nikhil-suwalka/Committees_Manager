@@ -543,7 +543,6 @@ def statsEvent(request, club_id, event_id):
     return render(request, "view_stats_event.html", context=context)
 
 def download_csv(request, club_id, event_id, form_id):
-    print("DOWNLOAD CSV")
     form = Form.objects.filter(id=form_id).first()
 
     response = HttpResponse(content_type='text/csv')
@@ -564,7 +563,6 @@ def download_csv(request, club_id, event_id, form_id):
         form_datas = all_registrations.values_list("form_data")
 
         json_form_data = json.loads(form_datas[0][0].replace("'", '"'))
-        print(json_form_data)
         for data in json_form_data:
             header_row.append(data)
 
@@ -574,6 +572,7 @@ def download_csv(request, club_id, event_id, form_id):
             json_data = json.loads(form_datas[i][0].replace("'", '"'))
 
             data = tuple((json_data[i] for i in json_data))
+            data = tuple((",".join(i) for i in data))
             print(data)
             writer.writerow(registrations[i] + data)
 
