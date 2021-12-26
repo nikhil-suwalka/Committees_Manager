@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://github.hubspot.com/odometer/themes/odometer-theme-minimal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.2.3/animate.min.css">
+    <script src="https://github.hubspot.com/odometer/odometer.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <style>
+        .odometer {
+            font-size: 30px;
+            text-align: center;
+            width: 100%;
+            -webkit-animation-duration: 3s;
+            animation-duration: 3s;
+        }
+    </style>
+
+    <script type="text/javascript">
+        google.charts.load("current", {packages: ["corechart"]});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart(raw_data, title, id) {
+            console.log(raw_data);
+            var data = google.visualization.arrayToDataTable(raw_data);
+
+            var view = new google.visualization.DataView(data);
+            view.setColumns([0, 1,
+                {
+                    calc: "stringify",
+                    sourceColumn: 1,
+                    type: "string",
+                    role: "annotation"
+                },2]);
+
+            var options = {
+                title: title,
+                width: 600,
+                height: 400,
+                bar: {groupWidth: "95%"},
+                legend: {position: "none"},
+            };
+            var chart = new google.visualization.BarChart(document.getElementById(id));
+            chart.draw(view, options);
+        }
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div style="">
+        <div class="container">
+            <div style="padding: 20px;height: 100px;background: linear-gradient(90deg, rgba(102,39,242,0.8), rgba(220,53,69,0.8));">
+                <h1 style="color: white;display: inline-block;">Stats for {{ club.name }} / {{ event.name }}</h1>
+                <button class="btn btn-success"
+                            style="border: none;width: 151px;height: 37px;color: rgb(255,255,255);display: inline-block; float: right;margin-top: 10px"
+                            type="button" onclick="location.href='{% url 'statsEvent' club.id event.id %}'">Excel &nbsp;
+                        <i class="fas fa fa-download"></i>
+                    </button>
+            </div>
+            <div>
+                <h2 style="padding: 20px;background: linear-gradient(94deg, rgba(125,113,245,0.39), rgba(19,157,254,0.16));">
+                    Overall Stats</h2>
+                <div style="margin-bottom: 20px">
+                    <div style="display: inline-block;background: #ecf5ff;height: 100px;padding: 10px;margin-right: 10px">
+                        <h5>Total Registrations</h5>
+                        <p id="reg_count" class="odometer"></p>
+                    </div>
+                    <div style="display: inline-block;background: #ecf5ff;height: 100px;padding: 10px;margin-right: 10px">
+                        <h5>Total Feedbacks</h5>
+                        <p id="fb_count" class="odometer"></p>
+                    </div>
+                    <div style="display: inline-block;background: #ecf5ff;height: 100px;padding: 10px;margin-right: 10px">
+                        <h5>College Participation</h5>
+                        <p id="cp_count" class="odometer"></p>
+                    </div>
+                    <div style="display: inline-block;background: #ecf5ff;height: 100px;padding: 10px;margin-right: 10px">
+                        <h5>Outside Participation</h5>
+                        <p id="op_count" class="odometer"></p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h2 style="padding: 20px;background: linear-gradient(94deg, rgba(125,113,245,0.39), rgba(19,157,254,0.16));">
+                    Charts</h2>
+                <div>
+                    {% for form_charts in charts %}
+                        {% for charts in form_charts %}
+                            <script>
+                                $(window).load(function () {
+                                    var chartData = `{{ charts.1|safe }}`;
+                                    chartData = chartData.replaceAll("'", '"');
+                                    chartData = JSON.parse(chartData);
+                                    chartData.splice(0,0,[`{{ charts.0|safe }}`,`Count`,{ role: "style" }])
+                                    drawChart(chartData, "{{ charts.0|safe }}", "id_{{ charts.0|safe }}")
+                                });
+                            </script>
+                            <div id="id_{{ charts.0|safe }}" style="display: inline-block"></div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        for (var i = 0; i < $('.odometer').length; i++) {
+            var odometer = new Odometer({
+                el: $('.odometer')[i],
+                value: 0,
+                theme: 'minimal',
+                duration: 3000
+            });
+            odometer.render();
+        }
+
+        $('#reg_count').text("{{ reg_count }}");
+        $('#fb_count').text("{{ fb_count }}");
+        $('#cp_count').text("{{ college_participant_count }}");
+        $('#op_count').text("{{ outside_participant_count }}");
+
+    </script>
+
+{% endblock %}

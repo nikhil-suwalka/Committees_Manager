@@ -12,6 +12,11 @@
                         Form &nbsp;
                         <i class="fas fa fa-edit"></i>
                     </button>
+                    <button class="btn btn-success"
+                            style="border: none;width: 151px;height: 37px;color: rgb(255,255,255);background: #8d87e3;margin-top: 10px; display: inline-block; float: right"
+                            type="button" onclick="location.href='{% url 'statsEvent' club.id event.id %}'">Check Stats &nbsp;
+                        <i class="fas fa fa-line-chart"></i>
+                    </button>
                 </div>
             </div>
             <div class="row">
@@ -35,16 +40,16 @@
                         {% endif %}
                         {% for form in forms %}
                             <tr>
-                                <td>{{ form.form_name }}</td>
+                                <td onclick="location.href='{% url 'fillEventForm' club.id event.id form.id %}'">{{ form.form_name }}</td>
                                 <td>{{ form.form_type }}</td>
                                 <td>{{ form.form_start }}</td>
                                 <td>{{ form.form_end }}</td>
                                 <td>
-                                    {#                                    <button type="button" class="btn btn-danger"#}
-                                    {#                                            onclick="location.href='{% url 'deleteEvent' club.id event.id %}'"><i#}
-                                    {#                                            class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>#}
-                                    {##}
-                                    {#                                    </button>#}
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="location.href='{% url 'deleteEventForm' club.id event.id form.id%}'"><i
+                                            class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+
+                                    </button>
                                     {#                                    <button type="button" class="btn btn-warning"><i#}
                                     {#                                            onclick="location.href='{% url 'editEvent' club.id event.id %}'"#}
                                     {#                                            class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>#}

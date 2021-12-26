@@ -417,6 +417,19 @@ def search(request):
     return render(request, 'search.html', context)
 
 
+def viewRegisteredEvents(request):
+    user = request.user
+    formSubmitted = FormSubmission.objects.filter(user_id=user, form_id__form_type=0).all()
+    eventIds = [id.form_id.event_id.id for id in formSubmitted]
+    events_raw = Event.objects.filter(id__in=eventIds).all()
+    events = list(events_raw.values())
+    for i in range(len(events)):
+        events[i]["club_id"] = events_raw[i].club_id.id
+        events[i]["tag"] = Event.objects.filter(id=events[i]["id"]).get().tag.all()
+
+    return render(request, 'view_registered_events.html', {"events": events})
+
+
 def viewEventForms(request, club_id, event_id):
     club = Club.objects.filter(id=club_id).first()
     event = Event.objects.filter(id=event_id).first()
@@ -452,7 +465,9 @@ def createEventForm(request, club_id, event_id):
     return render(request, 'form.html', context={"options": available_options})
 
 
-import json
+def deleteEventForm(request, club_id, event_id, form_id):
+    Form.objects.filter(id=form_id).delete()
+    return redirect("viewEventForms", club_id=club_id, event_id=event_id)
 
 
 def fillEventForm(request, club_id, event_id, form_id):
@@ -472,9 +487,54 @@ def fillEventForm(request, club_id, event_id, form_id):
                 submission_dict[data["label"]] = selections
 
             else:
-                submission_dict[data["label"]] = data["userData"]
+                if "userData" in data:
+                    submission_dict[data["label"]] = data["userData"]
         print(submission_dict)
         FormSubmission.objects.create(user_id=request.user, form_id=form, form_data=submission_dict)
 
     return render(request, 'fill_form.html', context={"form": form})
 
+
+def statsEvent(request, club_id, event_id):
+    club = Club.objects.filter(id=club_id).first()
+    event = Event.objects.filter(id=event_id).first()
+
+    regSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=0).all()
+    fbSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=1).all()
+    customSub = FormSubmission.objects.filter(form_id__event_id=event, form_id__form_type=2).all()
+    allSub_raw = FormSubmission.objects.filter(form_id__event_id=event).all()
+    all_sub = {}
+    for sub in allSub_raw:
+        all_sub[sub.form_id.id] = all_sub.get(sub.form_id.id, [])
+        all_sub[sub.form_id.id].append(sub)
+    college_participant_count = FormSubmission.objects.filter(user_id__email__contains="@spit.ac.in").all().count()
+    outside_participant_count = regSub.count() - college_participant_count
+
+    all_form_charts = []
+
+    form_struct = Form.objects.filter(event_id=event).all()
+    color = "#DC3545CC"
+    for i, f in enumerate(form_struct):
+        form_charts = []
+        struct = json.loads(f.form_structure)
+        for j, field in enumerate(struct):
+            if field.get("type") in ["select", "radio-group", "checkbox-group", "number"]:
+                chart = []
+                dict = {}
+                for sub in all_sub[f.id]:
+                    record = json.loads(str(sub.form_data).replace("'", '"'))[field["label"]]
+                    for item in record:
+                        dict[item] = dict.get(item, 0) + 1
+                for key, value in dict.items():
+                    chart.append([key, value, color])
+                form_charts.append([field["label"], chart])
+        all_form_charts.append(form_charts)
+    print(all_form_charts)
+    context = {"event": event,
+               "club": club,
+               "reg_count": regSub.count(),
+               "fb_count": fbSub.count(),
+               "college_participant_count": college_participant_count,
+               "outside_participant_count": outside_participant_count,
+               "charts": all_form_charts}
+    return render(request, "view_stats_event.html", context=context)
