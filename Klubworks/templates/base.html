@@ -74,7 +74,8 @@
                         style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #7c71f5;"
                         type="button">My Clubs
                 </button>
-                <button class="btn btn-danger"
+                <button onclick="location.href = '{% url 'viewRegisteredEvents' %}'"
+                        class="btn btn-danger"
                         style="border: none;width: 151px;height: 58px;margin-left: 14px;color: rgb(255,255,255);margin-top: 12px;background: #149eff;font-size: 13px;"
                         type="button">Registered Events
                 </button>

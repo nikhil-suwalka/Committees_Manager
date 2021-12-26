@@ -39,4 +39,4 @@ class KlubworksConfig(AppConfig):
                     # TODO: Send mail to this user id with feedback form event_feedback_form[event]
                     print(registration.user_id)
 
-            time.sleep(10)
+            time.sleep(600)

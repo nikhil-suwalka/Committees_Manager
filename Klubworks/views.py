@@ -417,6 +417,19 @@ def search(request):
     return render(request, 'search.html', context)
 
 
+def viewRegisteredEvents(request):
+    user = request.user
+    formSubmitted = FormSubmission.objects.filter(user_id=user, form_id__form_type=0).all()
+    eventIds = [id.form_id.event_id.id for id in formSubmitted]
+    events_raw = Event.objects.filter(id__in=eventIds).all()
+    events = list(events_raw.values())
+    for i in range(len(events)):
+        events[i]["club_id"] = events_raw[i].club_id.id
+        events[i]["tag"] = Event.objects.filter(id=events[i]["id"]).get().tag.all()
+
+    return render(request, 'view_registered_events.html', {"events": events})
+
+
 def viewEventForms(request, club_id, event_id):
     club = Club.objects.filter(id=club_id).first()
     event = Event.objects.filter(id=event_id).first()
