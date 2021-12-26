@@ -30,7 +30,7 @@
             <script>
                 jQuery(function ($) {
                     var fbRender = document.getElementById('fb-render'),
-                        formData = '{{ form.form_structure|safe }}';
+                        formData = `{{ form.form_structure|safe }}`;
 
                     var formRenderOpts = {
                         formData,
