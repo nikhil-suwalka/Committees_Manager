@@ -442,6 +442,8 @@ def viewEventForms(request, club_id, event_id):
     types = {0: "Register Form", 1: "Feedback Form", 2: "Custom Form"}
     for i in range(len(forms)):
         forms[i]["form_type"] = types[forms[i]["form_type"]]
+        forms[i]["link"] = request.build_absolute_uri(
+            reverse("fillEventForm", args=(club_id, event_id, forms[i]["id"])))
 
     context = {"club": club, "event": event, "forms": forms}
     return render(request, 'view_event_forms.html', context)
