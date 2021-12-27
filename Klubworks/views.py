@@ -175,8 +175,11 @@ def createEvent(request, club_id):
                                      end=request.POST["end"], duration=request.POST["duration"],
                                      description=request.POST["description"], link=request.POST["link"],
                                      logo=request.FILES["logo"], created_by=request.user)
+
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
+        for user in request.POST.getlist("guests"):
+            event.guests.add(User.objects.get(pk=user))
         event.save()
         return redirect("viewEvent", club_id=club_id)
 
@@ -187,7 +190,7 @@ def createEvent(request, club_id):
         return customhandler403(request, message="You are not allowed to enter here")
 
     event_form = EventForm(request.POST, request.FILES)
-    users = User.objects.all()
+    users = User.objects.filter(is_superuser=False).all()
 
     context = {'event_form': event_form, "users": users}
     return render(request, 'create_event.html', context)
