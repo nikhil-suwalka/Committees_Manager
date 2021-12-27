@@ -104,7 +104,7 @@ class EventForm(forms.ModelForm):
             'datetime': DateInput(),
 
         }
-        exclude = ["club_id", "created_by", "feedback_form_sent"]
+        exclude = ["club_id", "created_by", "feedback_form_sent", "event_reminder_sent"]
 
     def __init__(self, event=None, *args, **kwargs):
         super(EventForm, self).__init__(*args, **kwargs)
