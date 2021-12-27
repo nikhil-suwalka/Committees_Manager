@@ -351,13 +351,20 @@ def eventDisplay(request, club_id, event_id):
     event = Event.objects.filter(pk=event_id).values().first()
     event_tags = Event.objects.filter(pk=event_id).first().tag.values().all()
     members = ClubMember.objects.filter(club_id=club).order_by("position__priority").all()
+    guests = event.guests.order_by("first_name").all()
     event["logo"] = str(event["logo"]).split("/")[-1]
     context = {"members": [
         {"member_id": member.id, "name": member.user_id.first_name + " " + member.user_id.last_name,
          "email": member.user_id.email, "position": member.position.position,
          "photo": SocialAccount.objects.get(user_id=member.user_id.id).extra_data["picture"]
          } for member in
-        members], "club": club, "tags": event_tags, "mentors": club.mentor.values(), "event": event}
+        members],
+        "guests": [
+            {"guest_id": guest.id, "name": guest.first_name + " " + guest.last_name,
+             "email": guest.email,
+             "photo": SocialAccount.objects.get(user_id=guest.id).extra_data["picture"]
+             } for guest in guests]
+        , "club": club, "tags": event_tags, "mentors": club.mentor.values(), "event": event}
 
     form = Form.objects.filter(event_id=Event.objects.filter(id=event_id).first(),
                                form_type=FormType.REGISTRATION).first()
