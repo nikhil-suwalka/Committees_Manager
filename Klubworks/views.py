@@ -187,8 +187,9 @@ def createEvent(request, club_id):
         return customhandler403(request, message="You are not allowed to enter here")
 
     event_form = EventForm(request.POST, request.FILES)
+    users = User.objects.all()
 
-    context = {'event_form': event_form}
+    context = {'event_form': event_form, "users": users}
     return render(request, 'create_event.html', context)
 
 

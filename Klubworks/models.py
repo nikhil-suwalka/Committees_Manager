@@ -83,6 +83,8 @@ class Event(models.Model):
     logo = models.ImageField(upload_to="static/img/event")
     tag = models.ManyToManyField(Tag, related_name="event_tags")
 
+    guests = models.ManyToManyField(User, related_name="event_guests")
+
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_created_by")
 
     feedback_form_sent = models.BooleanField(default=False)
