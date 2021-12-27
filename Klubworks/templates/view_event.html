@@ -73,8 +73,17 @@
                     <div class="container">
                         <div class="intro"></div>
                         <div class="row people">
-                            WIP
-                            {#                            TODO GUESTS#}
+                            {% for guest in guests %}
+                                <div class="col-md-6 col-lg-4 item"
+                                     style="background-color: rgba(241,234,251,0.88);box-shadow: 2px 2px 10px rgba(49,52,55,0.13) ; border-radius: 15px; margin: 10px; width: 300px; height: 400px; margin-right: 30px"
+                                ><img class="rounded-circle"
+                                      src="{{ guest.photo }}"
+                                      alt="{% static 'img/avatars/empty_profile.png' %}"
+                                >
+                                    <h3 class="name">{{ guest.name }}</h3>
+                                    <p class="title">GUEST</p>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </section>
@@ -92,7 +101,6 @@
                                 >
                                     <h3 class="name">{{ member.name }}</h3>
                                     <p class="title">{{ member.position }}</p>
-                                    <p class="description">TODO</p>
                                 </div>
                             {% endfor %}
                         </div>

@@ -349,7 +349,8 @@ def clubDisplay(request, id):
 def eventDisplay(request, club_id, event_id):
     club = Club.objects.filter(id=club_id).first()
     event = Event.objects.filter(pk=event_id)
-    guests = event.guests.order_by("first_name").all()
+    guests = event.first().guests.order_by("first_name").all()
+    print(event.values())
     event = event.values().first()
     event_tags = Event.objects.filter(pk=event_id).first().tag.values().all()
     members = ClubMember.objects.filter(club_id=club).order_by("position__priority").all()
@@ -373,7 +374,7 @@ def eventDisplay(request, club_id, event_id):
         url1 = request.build_absolute_uri(reverse("fillEventForm", args=(club_id, event_id, form.id)))
         print(url1)
         context["register_form"] = url1
-    print(context)
+    print(context["guests"])
     return render(request, 'view_event.html', context)
 
 
