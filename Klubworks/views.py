@@ -230,7 +230,9 @@ def editEvent(request, club_id, event_id):
     event["start"] = event["start"].strftime("%Y-%m-%dT%H:%M")
     event["end"] = event["end"].strftime("%Y-%m-%dT%H:%M")
     print(event)
-    context = {'event_form': event_form, "event": event}
+    users = User.objects.filter(is_superuser=False).all()
+
+    context = {'event_form': event_form, "event": event, "users": users}
     return render(request, 'edit_event.html', context)
 
 
