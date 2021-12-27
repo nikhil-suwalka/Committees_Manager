@@ -52,14 +52,7 @@
 {% block main %}
     <div style="">
         <div class="container">
-            <div style="padding: 20px;height: 100px;background: linear-gradient(90deg, rgba(102,39,242,0.8), rgba(220,53,69,0.8));">
-                <h1 style="color: white;display: inline-block;">Stats for {{ club.name }} / {{ event.name }}</h1>
-                <button class="btn btn-success"
-                        style="border: none;width: 151px;height: 37px;color: rgb(255,255,255);display: inline-block; float: right;margin-top: 10px"
-                        type="button" onclick="location.href='{% url 'download_csv' club.id event.id %}'">CSV &nbsp;
-                    <i class="fas fa fa-download"></i>
-                </button>
-            </div>
+
             <div>
                 <h2 style="padding: 20px;background: linear-gradient(94deg, rgba(125,113,245,0.39), rgba(19,157,254,0.16));">
                     Overall Stats</h2>
