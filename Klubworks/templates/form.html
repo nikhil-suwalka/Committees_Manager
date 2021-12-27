@@ -19,6 +19,8 @@
                 </div>
             </div>
             <form name="myform" method="post">
+                {% csrf_token %}
+
                 <div style="padding: 5px">
                     <label> Name
                         <input name="form-name" type="text" style="display: inline-block; margin: 15px">
@@ -33,22 +35,20 @@
                     <label>Form Type
                         <select name="form-type" style="display:inline-block; margin: 15px">
                             {% for option in options %}
-                                <option value="{{ option.0 }}" > {{ option.1}}</option>
+                                <option value="{{ option.0 }}"> {{ option.1 }}</option>
                             {% endfor %}
                         </select>
                     </label>
                 </div>
-                <hr style="height: 2px; margin-bottom: 30px">
-
-
-                <div id="build-wrap"></div>
-                <div class="render-wrap" style="display: none"></div>
-
-                {% csrf_token %}
                 <button type="button" id="edit-form" style="display: none">Edit Form</button>
                 <button id="form-save" style="display: none">Submit Form</button>
                 <input name="formdata" id="form-data" type="text" value="" hidden>
+                <hr style="height: 2px; margin-bottom: 30px">
+
             </form>
+            <div id="build-wrap"></div>
+            <div class="render-wrap" style="display: none"></div>
+
 
             <script>
                 jQuery(function ($) {
@@ -74,7 +74,7 @@
                     $("#edit-form").click(function () {
                         $("#edit-form").css("display", "none");
                         $("#build-wrap").css("display", "block");
-                        $("#render-wrap").css("display", "none");
+                        $(".render-wrap").css("display", "none");
                         $("#form-save").css("display", "none");
 
                     });

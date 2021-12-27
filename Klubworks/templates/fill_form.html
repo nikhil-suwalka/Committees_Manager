@@ -18,14 +18,20 @@
                     <h2>{{ form.form_name }}</h2>
                 </div>
             </div>
-            <form name="myform" method="post" id="form">
-                {% csrf_token %}
+            {% if not form_filled %}
+                <form name="myform" method="post" id="form">
+                    {% csrf_token %}
 
-                <div id="fb-render"></div>
-                <input type="text" name="formdata" id="formdata" hidden>
-                <button id="form-save" type="button">Submit Form</button>
+                    <div id="fb-render"></div>
+                    <input type="text" name="formdata" id="formdata" hidden>
+                    <button id="form-save" type="button">Submit Form</button>
 
-            </form>
+                </form>
+            {% else %}
+                <h4>You've already responded</h4>
+                <h6>You can fill out this form only once.</h6>
+            {% endif %}
+
 
             <script>
                 jQuery(function ($) {

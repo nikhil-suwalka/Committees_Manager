@@ -349,7 +349,8 @@ def eventDisplay(request, club_id, event_id):
          } for member in
         members], "club": club, "tags": event_tags, "mentors": club.mentor.values(), "event": event}
 
-    form = Form.objects.filter(event_id=Event.objects.filter(id=event_id).first(), form_type=FormType.REGISTRATION).first()
+    form = Form.objects.filter(event_id=Event.objects.filter(id=event_id).first(),
+                               form_type=FormType.REGISTRATION).first()
     if form:
         url1 = request.build_absolute_uri(reverse("fillEventForm", args=(club_id, event_id, form.id)))
         print(url1)
@@ -475,6 +476,10 @@ def deleteEventForm(request, club_id, event_id, form_id):
 
 def fillEventForm(request, club_id, event_id, form_id):
     form = Form.objects.filter(id=form_id).first()
+    form_filled = False
+    if FormSubmission.objects.filter(form_id=form, user_id=request.user).count() > 0:
+        form_filled = True
+
     if request.method == "POST":
         submitted_form = json.loads(request.POST["formdata"])
         submission_dict = {}
@@ -495,7 +500,7 @@ def fillEventForm(request, club_id, event_id, form_id):
         print(submission_dict)
         FormSubmission.objects.create(user_id=request.user, form_id=form, form_data=submission_dict)
 
-    return render(request, 'fill_form.html', context={"form": form})
+    return render(request, 'fill_form.html', context={"form": form, "form_filled": form_filled})
 
 
 def statsEvent(request, club_id, event_id):
@@ -541,6 +546,7 @@ def statsEvent(request, club_id, event_id):
                "outside_participant_count": outside_participant_count,
                "charts": all_form_charts}
     return render(request, "view_stats_event.html", context=context)
+
 
 def download_csv(request, club_id, event_id, form_id):
     form = Form.objects.filter(id=form_id).first()
