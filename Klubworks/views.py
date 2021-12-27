@@ -1,16 +1,23 @@
+import io
 import json
-
+from html import escape
 from allauth.socialaccount.models import SocialAccount
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.template.loader import get_template
 from django.urls import reverse
 
 from Klubworks.forms import *
 from Klubworks.models import User
 import csv
 import Klubworks.FormType as FormType
+from io import StringIO
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.template import Context
+from django.http import HttpResponse
 
 
 def homeView(request):
@@ -604,3 +611,22 @@ def download_csv(request, club_id, event_id, form_id):
             writer.writerow(registrations[i] + data)
 
     return response
+
+
+def download_event_report(request, club_id, event_id):
+    event = Event.objects.filter(id=event_id).first()
+    template = get_template("event_report_pdf_template.html")
+    context = {
+        'pagesize': 'A4',
+        'event': event,
+        "event_attendees": FormSubmission.objects.filter(form_id__event_id=event,
+                                                         form_id__form_type=FormType.REGISTRATION).count(),
+        "guests": event.guests.values()
+    }
+    html = template.render(context)
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("ISO-8859-1")), result)
+
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))

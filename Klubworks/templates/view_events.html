@@ -97,6 +97,10 @@
                                         <i onclick="location.href='{% url 'viewEventForms' club.id event.id %}'"
                                            class="fas fa fa-edit d-xl-flex justify-content-xl-center align-items-xl-center"></i>
                                     </button>
+                                    <button type="button" class="btn btn-info">
+                                        <i onclick="window.open('{% url 'download_event_report' club.id event.id %}', '_blank')"
+                                           class="fas fa fa-file-pdf-o d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                    </button>
                                 </td>
                             </tr>
                         {% endfor %}

@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>My Title</title>
+    <style type="text/css">
+        ul li {
+            font-size: 20px;
+
+        }
+
+        h1 {
+            font-size: 25px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        p {
+            font-size: 20px;
+        }
+
+        @page {
+            size: {{ pagesize }};
+            margin: 1cm;
+            @frame footer {
+            -pdf-frame-content: footerContent;
+            bottom: 0cm;
+            margin-left: 9cm;
+            margin-right: 9cm;
+            height: 1cm;
+        }
+        }
+    </style>
+</head>
+<body>
+<center><h1>Post - Event Summary Report</h1></center>
+<div><h2 style="display: inline-block">Name of event:</h2>
+    <p style="display: inline-block">{{ event.name }}</p></div>
+<div><h2 style="display: inline-block">Name of club:</h2>
+    <p style="display: inline-block">{{ event.club_id.name }}{{ event.name }}</p></div>
+<div><h2 style="display: inline-block">Date of event:</h2>
+    <p style="display: inline-block">{{ event.datetime }}</p></div>
+<div><h2 style="display: inline-block">Number of Persons Attended:</h2>
+    <p style="display: inline-block">{{ event_attendees }}</p></div>
+<div><h2 style="display: inline-block">Event Link:</h2>
+    <p style="display: inline-block">{{ event.link }}</p></div>
+<div><h2 style="display: inline-block">Guests:</h2>
+    <ul style="display: inline-block">
+        {% for guest in guests %}
+            <li>{{ guest.first_name }} {{ guest.last_name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+<div><h2 style="display: inline-block">Event Description:</h2>
+    <p style="display: inline-block">{{ event.description }}</p></div>
+<div><h2 style="display: inline-block">Duration:</h2>
+    <p style="display: inline-block">{{ event.duration }}</p></div>
+
+</body>
+</html>
