@@ -61,10 +61,10 @@
                                     </button>
 
                                     <button type="button" class="btn btn-primary"
-                                            onclick="location.href='{% url 'download_csv' club.id event.id form.id %}'">
-                                       <i style="color: white" class="fas fa-link d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                            onclick="navigator.clipboard.writeText(`{{ form.link }}`);alert(`Link copied to clipboard`);">
+                                        <i style="color: white"
+                                           class="fas fa-link d-xl-flex justify-content-xl-center align-items-xl-center"></i>
                                     </button>
-
 
                                 </td>
                             </tr>
