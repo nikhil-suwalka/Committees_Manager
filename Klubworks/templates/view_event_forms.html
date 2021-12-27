@@ -14,7 +14,8 @@
                     </button>
                     <button class="btn btn-success"
                             style="border: none;width: 151px;height: 37px;color: rgb(255,255,255);background: #8d87e3;margin-top: 10px; display: inline-block; float: right"
-                            type="button" onclick="location.href='{% url 'statsEvent' club.id event.id %}'">Check Stats &nbsp;
+                            type="button" onclick="location.href='{% url 'statsEvent' club.id event.id %}'">Check Stats
+                        &nbsp;
                         <i class="fas fa fa-line-chart"></i>
                     </button>
                 </div>
@@ -46,25 +47,25 @@
                                 <td>{{ form.form_end }}</td>
                                 <td>
                                     <button type="button" class="btn btn-danger"
-                                            onclick="location.href='{% url 'deleteEventForm' club.id event.id form.id%}'"><i
-                                            class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                            onclick="location.href='{% url 'deleteEventForm' club.id event.id form.id %}'">
+                                        <i
+                                                class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>
 
                                     </button>
 
                                     <button type="button" class="btn btn-success"
-                                            onclick="location.href='{% url 'download_csv' club.id event.id form.id%}'"><i
-                                            class="far fa fa-cloud-download d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                            onclick="location.href='{% url 'download_csv' club.id event.id form.id %}'">
+                                        <i
+                                                class="far fa fa-cloud-download d-xl-flex justify-content-xl-center align-items-xl-center"></i>
 
                                     </button>
 
-                                    {#                                    <button type="button" class="btn btn-warning"><i#}
-                                    {#                                            onclick="location.href='{% url 'editEvent' club.id event.id %}'"#}
-                                    {#                                            class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i>#}
-                                    {#                                    </button>#}
-                                    {#                                    <button type="button" class="btn btn-success">#}
-                                    {#                                        <i onclick="location.href='{% url 'editEvent' club.id event.id %}'"#}
-                                    {#                                           class="fas fa fa-edit d-xl-flex justify-content-xl-center align-items-xl-center"></i>#}
-                                    {#                                    </button>#}
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="location.href='{% url 'download_csv' club.id event.id form.id %}'">
+                                       <i style="color: white" class="fas fa-link d-xl-flex justify-content-xl-center align-items-xl-center"></i>
+                                    </button>
+
+
                                 </td>
                             </tr>
                         {% endfor %}

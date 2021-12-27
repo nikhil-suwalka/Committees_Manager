@@ -86,6 +86,7 @@ class Event(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_created_by")
 
     feedback_form_sent = models.BooleanField(default=False)
+    event_reminder_sent = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.name)
