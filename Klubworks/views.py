@@ -348,10 +348,11 @@ def clubDisplay(request, id):
 
 def eventDisplay(request, club_id, event_id):
     club = Club.objects.filter(id=club_id).first()
-    event = Event.objects.filter(pk=event_id).values().first()
+    event = Event.objects.filter(pk=event_id)
+    guests = event.guests.order_by("first_name").all()
+    event = event.values().first()
     event_tags = Event.objects.filter(pk=event_id).first().tag.values().all()
     members = ClubMember.objects.filter(club_id=club).order_by("position__priority").all()
-    guests = event.guests.order_by("first_name").all()
     event["logo"] = str(event["logo"]).split("/")[-1]
     context = {"members": [
         {"member_id": member.id, "name": member.user_id.first_name + " " + member.user_id.last_name,
