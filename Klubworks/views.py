@@ -211,6 +211,10 @@ def editEvent(request, club_id, event_id):
         event.tag.clear()
         for tag in request.POST.getlist("tag"):
             event.tag.add(Tag.objects.get(pk=tag))
+
+        event.guests.clear()
+        for user in request.POST.getlist("guests"):
+            event.guests.add(User.objects.get(pk=user))
         event.save()
         return redirect("viewEvent", club_id=club_id)
 
